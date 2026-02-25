@@ -6,3 +6,11 @@ debug
 foo.*
 *.log
 data
+.DS_Store
+.lazy/
+rocks/
+lua/config/local.lua
+lua/plugins/local.lua
+.POWERLEVEL9K_INSTANT_PROMPT
+.env
+.env.*
