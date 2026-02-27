@@ -109,3 +109,233 @@ vim.keymap.set("n", "<leader>ff", require("telescope.builtin").find_files, { des
 vim.keymap.set("n", "<leader>fg", require("telescope.builtin").live_grep, { desc = "Live Grep (Project)" })
 vim.keymap.set("n", "<leader>fb", require("telescope.builtin").buffers, { desc = "Find Buffers" })
 vim.keymap.set("n", "<leader>fh", require("telescope.builtin").help_tags, { desc = "Find Help Tags" })
+
+-- ===========================
+-- MARKET WATCHER
+-- ===========================
+vim.keymap.set("n", "<leader>M", function()
+  local ok, market = pcall(require, "core.market")
+  if ok then market.toggle() end
+end, { desc = "Toggle Market Watcher" })
+
+
+
+-- ===========================
+-- BUFFER DELETE & LAYOUT PROTECTION
+-- ===========================
+vim.keymap.set("n", "<leader>bd", function()
+  local cur_win = vim.api.nvim_get_current_win()
+  
+  -- 열려있는 유효(Listed) 파일 버퍼 개수 세기
+  local listed_bufs = 0
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[buf].buflisted and vim.api.nvim_buf_is_valid(buf) then
+      local name = vim.api.nvim_buf_get_name(buf)
+      -- 터미널 버퍼 등은 개수에서 제외
+      if not string.match(name, "^term://") and vim.bo[buf].buftype ~= "terminal" then
+        listed_bufs = listed_bufs + 1
+      end
+    end
+  end
+
+  -- 원래 Snacks.bufdelete 실행
+  local ok_snacks, snacks = pcall(require, "snacks")
+  if ok_snacks and snacks.bufdelete then
+    snacks.bufdelete()
+  else
+    vim.cmd("bp|sp|bn|bd!")
+  end
+
+  -- 마지막 버퍼였다면 삭제 직후 현재 창에서 대시보드 렌더링
+  if listed_bufs <= 1 then
+    vim.schedule(function()
+      if vim.api.nvim_win_is_valid(cur_win) then
+        vim.api.nvim_set_current_win(cur_win)
+        if ok_snacks and snacks.dashboard then
+          -- Snacks 대시보드를 버퍼 영역(현재 창)에 띄우기 (다른 split 닫힘 방지)
+          snacks.dashboard.open({ win = cur_win })
+        end
+      end
+    end)
+  end
+end, { desc = "Delete Buffer & Protect Layout" })
+
+-- CUSTOM CHEATSHEET
+vim.keymap.set("n", "<leader>?", function()
+  -- If a cheatsheet window is already open, close it
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.b[buf].is_cheatsheet then
+      vim.api.nvim_win_close(win, true)
+      return
+    end
+  end
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.b[buf].is_cheatsheet = true
+  local lines = {
+    "# ⚡ NEOVIM CORE CHEATSHEET ⚡",
+    "---",
+    "| Move & Edit              | Window & File                |",
+    "|--------------------------|------------------------------|",
+    "| `s` / `S` Flash 점프       | `⇧H` / `⇧L` 이전/다음 탭         |",
+    "| `w` / `b` / `e` 단어 점프  | `Spc b d` 현재 버퍼 닫기       |",
+    "| `ciw` / `diw` 단어변경/삭제| `^w v/s` 수평/수직 분할        |",
+    "| `dd` / `yy` 줄 삭제/복사   | `^w =/q` 크기맞춤/닫기         |",
+    "| `u` / `^r` 취소/재실행     | `:w` / `:q` 저장/종료          |",
+    "| `ci\"` 안쪽 내용 변경       |                              |",
+    "",
+    "| Telescope & Search       | LSP & Code                   |",
+    "|--------------------------|------------------------------|",
+    "| `Spc f f` 파일 찾기        | `g d` 정의 위치로              |",
+    "| `Spc f g` 텍스트 검색      | `K` / `g r` 호버설명/참조       |",
+    "| `Spc f b` 열린 버퍼 찾기   | `Spc c a` 코드 자동복구(Fix)   |",
+    "| `Spc s t` Todo 검색        | `Spc c r` 변수명 일괄변경      |",
+    "| `Spc s k` 단축키 검색!     | `Spc c f` 파일 자동 정렬       |",
+    "| `/` / `%` 버퍼검색/괄호점프| `Spc x x` 에러 목록 보기(Trouble)|",
+    "|                          | `]c` / `[c` 다음/이전 Hunk       |",
+    "",
+    "| Tool & AI                | DB & Harpoon                 |",
+    "|--------------------------|------------------------------|",
+    "| `Spc g g` LazyGit 열기     | `Spc D` DBUI 토글              |",
+    "| `Spc a a` AI 채팅(Avante)  | `Spc h a` Harpoon 추가         |",
+    "| `^l` (삽입) AI 제안 수락   | `Spc h h` Harpoon 메뉴         |",
+    "| `Spc t f` 터미널 열기      | `Spc h 1~4` 1~4번 마크 점프    |",
+    "| `Spc r c` 원격(SSH) 접속   | `Spc t t` 다크/라이트 테마     |",
+    "",
+    "---",
+    "> **💡 닫기:** `q` 또는 `<ESC>` 또는 `<Space>?`",
+    "> **💡 논-리더단축키 찾기:** `<Space> s k` 입력 !"
+  }
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  vim.bo[buf].modifiable = false
+  vim.bo[buf].filetype = "markdown"
+
+  local width = 70
+  local height = #lines + 2
+  local col = math.floor((vim.o.columns - width) / 2)
+  local row = math.floor((vim.o.lines - height) / 2)
+
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    col = col,
+    row = row,
+    style = "minimal",
+    border = "rounded",
+    title = " Cheat Sheet ",
+    title_pos = "center",
+  })
+
+  -- 반투명 설정 (Optional)
+  pcall(vim.api.nvim_win_set_option, win, "winblend", 10)
+
+  -- Close mappings
+  local opts = { buffer = buf, silent = true }
+  vim.keymap.set("n", "q", "<cmd>close<CR>", opts)
+  vim.keymap.set("n", "<ESC>", "<cmd>close<CR>", opts)
+  vim.keymap.set("n", "<leader>?", "<cmd>close<CR>", opts)
+end, { desc = "Toggle Floating Cheatsheet" })
+
+-- ALL KEYMAPS SEARCH
+vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "Search Keymaps" })
+
+-- ===========================
+-- OBSIDIAN PROJECT EXPLORERS
+-- ===========================
+vim.keymap.set("n", "<leader>oe", function()
+  local ok, obs = pcall(require, "core.obsidian_project")
+  if not ok then return end
+  local project_name, status = obs.get_current_project_info()
+  if not project_name then
+    vim.notify("🚫 프로젝트 관리 대상 폴더가 아닙니다.", vim.log.levels.WARN, { title = "Obsidian Explorer" })
+    return
+  end
+  local act_dir, arc_dir = obs.get_obsidian_dirs()
+  local target_dir = (status == "archive" and arc_dir or act_dir) .. "/" .. project_name
+  -- Neo-tree 대신 설치되어 있는 oil.nvim (또는 snacks.explorer) 활용
+  local ok_oil, oil = pcall(require, "oil")
+  if ok_oil then
+    oil.open(target_dir)
+  else
+    vim.notify("파일 탐색기(oil.nvim)를 찾을 수 없습니다.", vim.log.levels.ERROR)
+  end
+end, { desc = "Obsidian Project Explorer" })
+
+vim.keymap.set("n", "<leader>of", function()
+  local ok, obs = pcall(require, "core.obsidian_project")
+  if not ok then return end
+  local project_name, status = obs.get_current_project_info()
+  if not project_name then
+    vim.notify("🚫 프로젝트 관리 대상 폴더가 아닙니다.", vim.log.levels.WARN, { title = "Obsidian Finder" })
+    return
+  end
+  local act_dir, arc_dir = obs.get_obsidian_dirs()
+  local target_dir = (status == "archive" and arc_dir or act_dir) .. "/" .. project_name
+  
+  -- Telescope로 해당 폴더 내 파일 검색
+  require("telescope.builtin").find_files({ 
+    search_dirs = { target_dir },
+    prompt_title = "Obsidian: " .. project_name 
+  })
+end, { desc = "Obsidian Project Finder" })
+
+-- ===========================
+-- OBSIDIAN PROJECT ARCHIVING
+-- ===========================
+vim.keymap.set("n", "<leader>oa", function()
+  local ok, obs = pcall(require, "core.obsidian_project")
+  if not ok then return end
+  
+  local project_name, status, code_root = obs.get_current_project_info()
+  if not project_name then
+    vim.notify("🚫 프로젝트 관리 대상 폴더가 아닙니다.", vim.log.levels.WARN, { title = "Obsidian Archive" })
+    return
+  end
+  
+  if status == "archive" then
+    vim.notify("📦 이미 아카이브된 프로젝트입니다.", vim.log.levels.INFO, { title = "Obsidian Archive" })
+    return
+  end
+  
+  -- 확인 프롬프트
+  vim.ui.select({"Yes", "No"}, {
+    prompt = string.format("정말 '%s' 프로젝트를 동기화 아카이브 하시겠습니까? (버퍼 닫힘 주의)", project_name)
+  }, function(choice)
+    if choice == "Yes" then
+      local act_obs, arc_obs = obs.get_obsidian_dirs()
+      local act_code, arc_code = obs.get_code_dirs()
+      
+      local target_obs_dir = arc_obs .. "/" .. project_name
+      local target_code_dir = arc_code .. "/" .. project_name
+      local source_obs_dir = act_obs .. "/" .. project_name
+      
+      -- 1. 모든 버퍼 저장 및 닫기
+      vim.cmd("wa")
+      vim.cmd("%bd")
+      
+      -- 2. cwd 안전영역으로 회피
+      vim.fn.chdir(vim.fn.expand("~"))
+      
+      -- 3. 시스템 이동 수행
+      vim.fn.mkdir(arc_code, "p")
+      vim.fn.mkdir(arc_obs, "p")
+      
+      local code_mv = string.format("mv '%s' '%s'", code_root, target_code_dir)
+      vim.fn.system(code_mv)
+      
+      if vim.fn.isdirectory(source_obs_dir) == 1 then
+        local obs_mv = string.format("mv '%s' '%s'", source_obs_dir, target_obs_dir)
+        vim.fn.system(obs_mv)
+      end
+      
+      -- 4. 완료 알림
+      vim.notify(
+        string.format("📦 프로젝트 아카이브 완료!\nCode -> %s\nNote -> %s", arc_code, arc_obs),
+        vim.log.levels.INFO,
+        { title = "Obsidian Project" }
+      )
+    end
+  end)
+end, { desc = "Archive Obsidian Project" })

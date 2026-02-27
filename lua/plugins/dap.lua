@@ -65,6 +65,25 @@ return {
       local dap = require("dap")
 
       ---------------------------------------------------------------------------
+      -- Custom Breakpoint Icons & Colors (Improves Visibility)
+      ---------------------------------------------------------------------------
+      vim.api.nvim_set_hl(0, "DapBreakpoint", { fg = "#f7768e" }) -- Red
+      vim.api.nvim_set_hl(0, "DapLogPoint", { fg = "#7dcfff" })   -- Blue
+      vim.api.nvim_set_hl(0, "DapStopped", { fg = "#9ece6a" })    -- Green
+
+      local dap_signs = {
+        Breakpoint = { text = "🔴", texthl = "DapBreakpoint" },
+        BreakpointCondition = { text = "🔶", texthl = "DapBreakpoint" },
+        BreakpointRejected = { text = "⚪", texthl = "DapBreakpoint" },
+        LogPoint = { text = "📜", texthl = "DapLogPoint" },
+        Stopped = { text = "👉", texthl = "DapStopped", linehl = "CursorLine" },
+      }
+
+      for name, sign in pairs(dap_signs) do
+        vim.fn.sign_define("Dap" .. name, sign)
+      end
+
+      ---------------------------------------------------------------------------
       -- Helpers
       ---------------------------------------------------------------------------
       local function pick_program()

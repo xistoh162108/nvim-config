@@ -5,9 +5,7 @@ return {
     dependencies = { "kevinhwang91/promise-async" },
     opts = {
       provider_selector = function(_, _, _)
-        -- LSP 폴딩이 되는 언어면 LSP가 더 정확한 경우가 많고
-        -- 안되면 treesitter/indent로 fallback
-        return { "lsp", "treesitter", "indent" }
+        return { "treesitter", "indent" }
       end,
     },
     init = function()

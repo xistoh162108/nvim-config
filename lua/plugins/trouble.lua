@@ -15,5 +15,6 @@ return {
     { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "심볼 (Trouble)" },
     { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List" },
     { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List" },
+    { "<leader>xr", "<cmd>Trouble lsp toggle<CR>", desc = "Trouble LSP (refs/defs)" },
   },
 }

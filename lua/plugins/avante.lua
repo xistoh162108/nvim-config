@@ -135,6 +135,10 @@ return {
           jump_next = "]x",
           jump_prev = "[x",
         },
+        submit = {
+          normal = "<CR>",
+          insert = "<CR>", -- 엔터로 바로 전송되게 변경
+        },
       },
 
       -- file selector provider 충돌 줄이기 (snacks/tele/telescope 중 취향)

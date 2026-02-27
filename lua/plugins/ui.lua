@@ -3,15 +3,11 @@ return {
   -- notify/noice
   {
     "rcarriga/nvim-notify",
-    lazy = true,
     opts = {
       timeout = 2000,
       stages = "fade_in_slide_out",
       render = "default",
     },
-    init = function()
-      vim.notify = require("notify")
-    end,
   },
   {
     "folke/noice.nvim",
@@ -21,6 +17,7 @@ return {
       "rcarriga/nvim-notify",
     },
     opts = {
+      notify = { enabled = false }, -- nvim-notify와의 충돌 방지용 (vim.notify overwrite 에러 해결)
       lsp = {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -30,7 +27,7 @@ return {
       },
       presets = {
         bottom_search = true,
-        command_palette = true,
+        command_palette = false, -- blink.cmp 자동완성 팝업과 충돌/깜빡임 방지를 위해 기본 하단 커맨드라인 사용
         long_message_to_split = true,
         inc_rename = false,
         lsp_doc_border = true,
@@ -86,35 +83,6 @@ return {
     },
   },
 
-  -- 폴딩: ufo
-  {
-    "kevinhwang91/nvim-ufo",
-    event = "BufReadPost",
-    dependencies = { "kevinhwang91/promise-async" },
-    opts = {
-      provider_selector = function()
-        return { "treesitter", "indent" }
-      end,
-    },
-    config = function(_, opts)
-      vim.o.foldcolumn = "1"
-      vim.o.foldlevel = 99
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = true
-
-      require("ufo").setup(opts)
-
-      vim.keymap.set("n", "zR", require("ufo").openAllFolds, { desc = "Open all folds" })
-      vim.keymap.set("n", "zM", require("ufo").closeAllFolds, { desc = "Close all folds" })
-      vim.keymap.set("n", "zK", function()
-        local winid = require("ufo").peekFoldedLinesUnderCursor()
-        if not winid then
-          vim.lsp.buf.hover()
-        end
-      end, { desc = "Peek fold or hover" })
-    end,
-  },
-
   -- 인덴트 가이드
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -130,7 +98,6 @@ return {
           "neo-tree",
           "Trouble",
           "lazy",
-          "mason",
           "notify",
           "toggleterm",
           "lazyterm",

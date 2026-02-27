@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k\\) for k in sorted\\(d.keys\\(\\)\\)]\")",
+      "mcp__playwright__browser_navigate",
+      "Bash(chmod +x /Users/bagjimin/.config/nvim/docs/export-png.sh)",
+      "Bash(bash export-png.sh)",
+      "Bash(node --version)",
+      "Bash(npm install puppeteer --prefix /tmp/mousepad-export --quiet)",
+      "Bash(node -e \":*)",
+      "Bash(/opt/homebrew/bin/pip3 install pynvim jupyter_client cairosvg pnglatex plotly kaleido)",
+      "Bash(/opt/homebrew/bin/pip3 install --break-system-packages pynvim jupyter_client cairosvg pnglatex plotly kaleido)",
+      "Bash(ls /Users/bagjimin/.config/nvim/*.md)"
+    ]
+  }
+}

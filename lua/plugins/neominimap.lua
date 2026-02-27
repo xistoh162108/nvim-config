@@ -2,6 +2,7 @@
 return {
   "Isrothy/neominimap.nvim",
   version = "v3.x.x",
+  enabled = true,
   lazy = false, -- 추천: lazy 로딩 안 함
   keys = {
     -- Global

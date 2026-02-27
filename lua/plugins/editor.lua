@@ -96,6 +96,16 @@ return {
         always_show_bufferline = false,
         show_buffer_close_icons = false,
         show_close_icon = false,
+        custom_filter = function(buf_number, buf_numbers)
+          -- 터미널 버퍼이거나 이름이 term:// 로 시작하면 bufferline에서 숨김
+          local bt = vim.bo[buf_number].buftype
+          if bt == "terminal" then return false end
+          local file_path = vim.api.nvim_buf_get_name(buf_number)
+          if string.match(file_path, "^term://") then return false end
+          
+          -- 그 외(일반 파일)만 표시
+          return true
+        end,
       },
     },
     keys = {

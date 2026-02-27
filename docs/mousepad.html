@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neovim Mousepad — Cheatsheet</title>
+
+  <!-- Geist Mono via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;600;700&family=VT323&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.4.0/dist/dom-to-image-more.min.js"></script>
+
+  <style>
+    /* ── Geist Pixel Round via jsDelivr (npm: geist) ── */
+    @font-face {
+      font-family: 'GeistPixelRound';
+      src: url('https://cdn.jsdelivr.net/npm/geist/dist/fonts/geist-pixel-round/GeistPixelRound-Regular.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-pixel-round/GeistPixelRound-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* ── Design Tokens ── */
+    :root {
+      --bg:      #07070f;
+      --bg2:     #0c0c1a;
+      --bg3:     #111124;
+      --border:  #1a1a36;
+      --text:    #d0d0ee;
+      --dim:     #50508a;
+      --bright:  #9090b8;
+      --cyan:    #00e5ff;
+      --green:   #39ff14;
+      --pink:    #ff1aff;
+      --yellow:  #ffee00;
+      --orange:  #ff8800;
+      --blue:    #4db8ff;
+      --purple:  #bf40ff;
+      --red:     #ff3355;
+      --teal:    #00ffcc;
+      --white:   #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #050510;
+      color: var(--text);
+      font-family: 'GeistPixelRound', 'Geist Mono', 'VT323', 'Courier New', monospace;
+      font-size: 8px;
+      line-height: 1.4;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ── Print guide (screen only) ── */
+    .print-guide {
+      background: #0a0a1e;
+      border: 1px solid var(--cyan);
+      border-radius: 6px;
+      padding: 16px 22px;
+      margin: 18px auto;
+      max-width: 900px;
+      font-size: 12px;
+      font-family: 'Geist Mono', monospace;
+    }
+    .print-guide h2 { color: var(--cyan); font-size: 14px; margin-bottom: 8px; letter-spacing: 2px; }
+    .print-guide p  { color: #999; margin: 3px 0; }
+    .print-guide strong { color: var(--green); }
+    .print-guide ol { margin: 8px 0 8px 18px; }
+    .print-guide li { color: #ccc; margin: 2px 0; }
+    .print-guide .btns { display: flex; gap: 8px; margin-top: 12px; align-items: center; }
+    .print-guide .btn {
+      display: inline-block;
+      font-family: inherit; font-size: 11px; font-weight: 700;
+      padding: 7px 20px; border: none; border-radius: 3px;
+      cursor: pointer; letter-spacing: 1px;
+    }
+    .print-guide .btn-print { background: var(--cyan); color: #000; }
+    .print-guide .btn-print:hover { background: var(--green); }
+    .print-guide .btn-png { background: var(--purple); color: #fff; }
+    .print-guide .btn-png:hover { background: var(--pink); }
+    .print-guide .btn-png:disabled { opacity: .5; cursor: wait; }
+    @media print { .print-guide { display: none !important; } }
+
+    /* ── Page: 590mm × 220mm ── */
+    .page {
+      width: 590mm;
+      height: 220mm;
+      padding: 4.5mm 5mm 3.5mm;
+      margin: 12px auto;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    @media print {
+      html, body { background: var(--bg); }
+      @page { size: 590mm 220mm; margin: 0; }
+      .page { width: 590mm; height: 220mm; margin: 0; }
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid var(--cyan);
+      padding-bottom: 2.5mm;
+      margin-bottom: 3mm;
+    }
+    .h-left { display: flex; align-items: baseline; gap: 4mm; }
+    .h-title {
+      font-size: 19px; font-weight: 700;
+      color: var(--cyan); letter-spacing: 5px; text-transform: uppercase;
+      text-shadow: 0 0 14px rgba(0,229,255,.55);
+    }
+    .h-sub { font-size: 7px; color: var(--dim); letter-spacing: 2.5px; }
+    .h-right { display: flex; align-items: center; gap: 3mm; }
+    .h-badge {
+      font-size: 6.5px; color: var(--green);
+      border: 1px solid var(--green); padding: 2px 6px;
+      border-radius: 2px; letter-spacing: 2px;
+    }
+    .h-theme { font-size: 6.5px; color: var(--dim); letter-spacing: 1.5px; }
+
+    /* ── 9-Column Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      align-items: start;
+      gap: 2mm;
+    }
+
+    /* ── Column (flex stacked sections) ── */
+    .col { display: flex; flex-direction: column; gap: 2mm; }
+
+    /* ── Section Card ── */
+    .sec {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-top: 2px solid;
+      border-radius: 2px;
+      break-inside: avoid;
+      flex-shrink: 0;
+    }
+    .sec-head {
+      font-size: 6.5px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 1.8mm 2mm 1.2mm;
+      border-bottom: 1px solid var(--border);
+    }
+    .sec-body { padding: 1.5mm 2mm; }
+
+    /* Color variants */
+    .c-cyan   { border-top-color: var(--cyan);   } .c-cyan   .sec-head { color: var(--cyan);   background: rgba(0,229,255,.07); }
+    .c-green  { border-top-color: var(--green);  } .c-green  .sec-head { color: var(--green);  background: rgba(57,255,20,.07); }
+    .c-pink   { border-top-color: var(--pink);   } .c-pink   .sec-head { color: var(--pink);   background: rgba(255,26,255,.07); }
+    .c-yellow { border-top-color: var(--yellow); } .c-yellow .sec-head { color: var(--yellow); background: rgba(255,238,0,.07); }
+    .c-orange { border-top-color: var(--orange); } .c-orange .sec-head { color: var(--orange); background: rgba(255,136,0,.07); }
+    .c-blue   { border-top-color: var(--blue);   } .c-blue   .sec-head { color: var(--blue);   background: rgba(77,184,255,.07); }
+    .c-purple { border-top-color: var(--purple); } .c-purple .sec-head { color: var(--purple); background: rgba(191,64,255,.07); }
+    .c-teal   { border-top-color: var(--teal);   } .c-teal   .sec-head { color: var(--teal);   background: rgba(0,255,204,.07); }
+    .c-red    { border-top-color: var(--red);    } .c-red    .sec-head { color: var(--red);    background: rgba(255,51,85,.07); }
+
+    /* ── Row ── */
+    .row {
+      display: flex; align-items: baseline;
+      justify-content: space-between;
+      gap: 1.5mm; margin: 1px 0;
+    }
+    .key-grp { display: flex; align-items: center; gap: 1px; flex-shrink: 0; }
+
+    kbd {
+      display: inline-block;
+      background: var(--bg3);
+      border: 1px solid #202040;
+      border-bottom: 2px solid rgba(255,255,255,.07);
+      border-radius: 2px;
+      padding: 0px 2.5px;
+      font-family: inherit; font-size: 7px;
+      color: var(--text); white-space: nowrap; line-height: 1.75;
+    }
+    kbd.hi-c { color: var(--cyan);   border-color: rgba(0,229,255,.35); }
+    kbd.hi-g { color: var(--green);  border-color: rgba(57,255,20,.35); }
+    kbd.hi-p { color: var(--pink);   border-color: rgba(255,26,255,.35); }
+    kbd.hi-y { color: var(--yellow); border-color: rgba(255,238,0,.35); }
+    kbd.hi-o { color: var(--orange); border-color: rgba(255,136,0,.35); }
+    kbd.hi-b { color: var(--blue);   border-color: rgba(77,184,255,.35); }
+    kbd.hi-pu{ color: var(--purple); border-color: rgba(191,64,255,.35); }
+    kbd.hi-t { color: var(--teal);   border-color: rgba(0,255,204,.35); }
+    kbd.hi-r { color: var(--red);    border-color: rgba(255,51,85,.35); }
+
+    .plus  { font-size: 6.5px; color: var(--dim); margin: 0 0.5px; }
+    .slash { font-size: 6.5px; color: var(--dim); }
+
+    .desc {
+      color: var(--dim); font-size: 6.5px;
+      text-align: right; flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+    }
+    .desc.hi { color: var(--bright); }
+
+    hr.div { border: none; border-top: 1px solid var(--border); margin: 1.5mm 0 1mm; }
+    .sub { font-size: 5.5px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin: 2px 0 1px; }
+
+    /* ── Mode badges ── */
+    .modes { display: flex; flex-wrap: wrap; gap: 1.5px; margin-bottom: 1.5mm; }
+    .mode {
+      display: inline-flex; align-items: center;
+      padding: 1px 4px; border-radius: 2px;
+      font-size: 6.5px; font-weight: 700; letter-spacing: 0.5px;
+      border: 1px solid; white-space: nowrap;
+    }
+    .mode .mk { font-size: 8.5px; font-weight: 700; margin-right: 2px; }
+    .mn { color: var(--green);  border-color: var(--green);  background: rgba(57,255,20,.12); }
+    .mi { color: var(--cyan);   border-color: var(--cyan);   background: rgba(0,229,255,.12); }
+    .mv { color: var(--purple); border-color: var(--purple); background: rgba(191,64,255,.12); }
+    .mc { color: var(--yellow); border-color: var(--yellow); background: rgba(255,238,0,.12); }
+    .mt { color: var(--orange); border-color: var(--orange); background: rgba(255,136,0,.12); }
+    .mo { color: var(--red);    border-color: var(--red);    background: rgba(255,51,85,.12); }
+    .mr { color: var(--pink);   border-color: var(--pink);   background: rgba(255,26,255,.12); }
+
+    /* ── Footer ── */
+    .footer {
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 2mm; margin-top: 2mm;
+      font-size: 6px; color: var(--dim);
+    }
+    .footer .glow { color: var(--cyan); }
+    .footer .pill {
+      display: inline-block; font-size: 5.5px; letter-spacing: 1px;
+      color: var(--green); border: 1px solid rgba(57,255,20,.4);
+      padding: 1px 5px; border-radius: 2px; margin-left: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Print Guide -->
+<div class="print-guide">
+  <h2>🖨  마우스패드 인쇄 가이드</h2>
+  <p>이 파일은 <strong>590mm × 220mm</strong> (XL 게이밍 마우스패드 표준 규격) 출력용입니다.</p>
+  <ol>
+    <li>브라우저에서 <strong>Cmd + P</strong> 로 인쇄 창 열기</li>
+    <li>용지 크기: <strong>사용자 정의 — 590mm × 220mm</strong></li>
+    <li>방향: <strong>가로(Landscape)</strong> / 여백: <strong>없음(None)</strong></li>
+    <li><strong>배경 그래픽 반드시 활성화</strong> (배경 색상 포함)</li>
+    <li>PDF 저장 후 마우스패드 업체에 전달 → <strong>다른 이름으로 저장 → PDF</strong></li>
+  </ol>
+  <p>권장: <strong>300 DPI 이상</strong> · <strong>천(Cloth) 마우스패드 커스텀 프린팅</strong></p>
+  <div class="btns">
+    <button class="btn btn-print" onclick="window.print()">인쇄 / PDF 저장</button>
+    <button class="btn btn-png" id="dl-btn" onclick="downloadPNG()">PNG 다운로드 (3x)</button>
+  </div>
+</div>
+
+<script>
+async function downloadPNG() {
+  const btn = document.getElementById('dl-btn');
+  btn.disabled = true;
+  btn.textContent = '렌더링 중...';
+  try {
+    await document.fonts.ready;
+    const el = document.querySelector('.page');
+    const scale = 3;
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    const blob = await domtoimage.toBlob(el, {
+      width:  w * scale,
+      height: h * scale,
+      style: {
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
+        width:  w + 'px',
+        height: h + 'px',
+      },
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.download = 'nvim-mousepad.png';
+    a.href = url;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch(e) {
+    alert('오류: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'PNG 다운로드 (3x)';
+  }
+}
+</script>
+
+<!-- ══════════ 590mm × 220mm PAGE ══════════ -->
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="h-left">
+      <div class="h-title">NVIM CHEATSHEET</div>
+      <div class="h-sub">LazyVim · Cyberdream · Space = &lt;leader&gt;</div>
+    </div>
+    <div class="h-right">
+      <div class="h-theme">GeistPixelRound · cyberdream</div>
+      <div class="h-badge">v2026</div>
+    </div>
+  </div>
+
+  <!-- 9-Column Grid -->
+  <div class="grid">
+
+    <!-- ════ COL 1: MODES + FILE ════ -->
+    <div class="col">
+    <div class="sec c-green">
+      <div class="sec-head">Modes</div>
+      <div class="sec-body">
+        <div class="modes">
+          <span class="mode mn"><span class="mk">N</span>NORMAL</span>
+          <span class="mode mi"><span class="mk">I</span>INSERT</span>
+          <span class="mode mv"><span class="mk">V</span>VISUAL</span>
+          <span class="mode mc"><span class="mk">C</span>CMD</span>
+          <span class="mode mt"><span class="mk">T</span>TERM</span>
+          <span class="mode mo"><span class="mk">O</span>OP</span>
+          <span class="mode mr"><span class="mk">R</span>REPL</span>
+        </div>
+        <div class="sub">진입</div>
+        <div class="row"><div class="key-grp"><kbd>i</kbd></div><div class="desc hi">커서 앞 삽입</div></div>
+        <div class="row"><div class="key-grp"><kbd>a</kbd></div><div class="desc hi">커서 뒤 삽입</div></div>
+        <div class="row"><div class="key-grp"><kbd>I</kbd><span class="slash">/</span><kbd>A</kbd></div><div class="desc">줄 앞/끝 삽입</div></div>
+        <div class="row"><div class="key-grp"><kbd>o</kbd><span class="slash">/</span><kbd>O</kbd></div><div class="desc">아래/위 줄+삽입</div></div>
+        <div class="row"><div class="key-grp"><kbd>v</kbd><span class="slash">/</span><kbd>V</kbd></div><div class="desc">문자/줄 비주얼</div></div>
+        <div class="row"><div class="key-grp"><kbd class="hi-pu">^v</kbd></div><div class="desc">블록 비주얼</div></div>
+        <div class="row"><div class="key-grp"><kbd>R</kbd></div><div class="desc">교체 모드</div></div>
+        <div class="row"><div class="key-grp"><kbd>:</kbd></div><div class="desc">명령 모드</div></div>
+        <div class="row"><div class="key-grp"><kbd class="hi-c">ESC</kbd></div><div class="desc hi">→ Normal</div></div>
+        <hr class="div">
+        <div class="sub">파일</div>
+        <div class="row"><div class="key-grp"><kbd>:w</kbd></div><div class="desc">저장</div></div>
+        <div class="row"><div class="key-grp"><kbd>:wq</kbd><span class="slash">/</span><kbd>ZZ</kbd></div><div class="desc">저장+종료</div></div>
+        <div class="row"><div class="key-grp"><kbd>:q!</kbd><span class="slash">/</span><kbd>ZQ</kbd></div><div class="desc">강제 종료</div></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ════ COL 2: NAVIGATION + EDITING ════ -->
+    <div class="col">
+      <div class="sec c-cyan">
+        <div class="sec-head">Navigation</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd></div><div class="desc">← ↓ ↑ →</div></div>
+          <div class="row"><div class="key-grp"><kbd>w</kbd><kbd>b</kbd><kbd>e</kbd></div><div class="desc">단어 앞/뒤/끝</div></div>
+          <div class="row"><div class="key-grp"><kbd>gg</kbd><span class="slash">/</span><kbd>G</kbd></div><div class="desc">파일 처음/끝</div></div>
+          <div class="row"><div class="key-grp"><kbd>0</kbd><kbd>^</kbd><kbd>$</kbd></div><div class="desc">줄 시작/비공백/끝</div></div>
+          <div class="row"><div class="key-grp"><kbd>%</kbd></div><div class="desc">매칭 괄호</div></div>
+          <div class="row"><div class="key-grp"><kbd>*</kbd><span class="slash">/</span><kbd>#</kbd></div><div class="desc">단어 검색 앞/뒤</div></div>
+          <div class="row"><div class="key-grp"><kbd>f{c}</kbd><span class="slash">/</span><kbd>F{c}</kbd></div><div class="desc">문자 점프 앞/뒤</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-c">^d</kbd><span class="slash">/</span><kbd class="hi-c">^u</kbd></div><div class="desc hi">반 페이지 下/上</div></div>
+          <div class="row"><div class="key-grp"><kbd>zz</kbd><kbd>zt</kbd><kbd>zb</kbd></div><div class="desc">커서 중/상/하</div></div>
+          <div class="row"><div class="key-grp"><kbd>H</kbd><kbd>M</kbd><kbd>L</kbd></div><div class="desc">화면 상/중/하</div></div>
+          <div class="row"><div class="key-grp"><kbd>^o</kbd><span class="slash">/</span><kbd>^i</kbd></div><div class="desc">점프 뒤로/앞으로</div></div>
+        </div>
+      </div>
+      <div class="sec c-blue">
+        <div class="sec-head">Editing</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd>x</kbd></div><div class="desc">문자 삭제</div></div>
+          <div class="row"><div class="key-grp"><kbd>dd</kbd><span class="slash">/</span><kbd>yy</kbd></div><div class="desc">줄 삭제/복사</div></div>
+          <div class="row"><div class="key-grp"><kbd>p</kbd><span class="slash">/</span><kbd>P</kbd></div><div class="desc">뒤/앞 붙여넣기</div></div>
+          <div class="row"><div class="key-grp"><kbd>u</kbd><span class="slash">/</span><kbd>^r</kbd></div><div class="desc">취소/재실행</div></div>
+          <div class="row"><div class="key-grp"><kbd>.</kbd></div><div class="desc">변경 반복</div></div>
+          <div class="row"><div class="key-grp"><kbd>>></kbd><span class="slash">/</span><kbd>&lt;&lt;</kbd></div><div class="desc">들여쓰기/내어쓰기</div></div>
+          <div class="row"><div class="key-grp"><kbd>ciw</kbd><kbd>diw</kbd><kbd>yiw</kbd></div><div class="desc">단어 c/d/y</div></div>
+          <div class="row"><div class="key-grp"><kbd>ci"</kbd><kbd>ci(</kbd><kbd>cit</kbd></div><div class="desc">안 변경 "/(/태그</div></div>
+          <hr class="div">
+          <div class="row"><div class="key-grp"><kbd>/pat</kbd><span class="slash">/</span><kbd>?pat</kbd></div><div class="desc">앞/뒤 검색</div></div>
+          <div class="row"><div class="key-grp"><kbd>n</kbd><span class="slash">/</span><kbd>N</kbd></div><div class="desc">다음/이전 결과</div></div>
+          <div class="row"><div class="key-grp"><kbd>:%s/a/b/g</kbd></div><div class="desc">전체 치환</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ COL 3: FLASH + UFO + BUFFERS + WINDOWS ════ -->
+    <div class="col">
+      <div class="sec c-yellow">
+        <div class="sec-head">Flash (Motion)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-y">s</kbd></div><div class="desc hi">Flash 점프 (n/x/o)</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-y">S</kbd></div><div class="desc hi">Flash Treesitter</div></div>
+          <div class="row"><div class="key-grp"><kbd>r</kbd></div><div class="desc">Remote Flash (o)</div></div>
+          <div class="row"><div class="key-grp"><kbd>R</kbd></div><div class="desc">TS 검색 (o/x)</div></div>
+          <div class="row"><div class="key-grp"><kbd>^s</kbd></div><div class="desc">Flash 토글 (cmd)</div></div>
+        </div>
+      </div>
+      <div class="sec c-teal">
+        <div class="sec-head">UFO Folding</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-t">zR</kbd></div><div class="desc hi">모든 폴드 열기</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-t">zM</kbd></div><div class="desc hi">모든 폴드 닫기</div></div>
+          <div class="row"><div class="key-grp"><kbd>zr</kbd><span class="slash">/</span><kbd>zm</kbd></div><div class="desc">폴드 줄이기/늘리기</div></div>
+          <div class="row"><div class="key-grp"><kbd>zp</kbd></div><div class="desc">폴드 미리보기</div></div>
+          <div class="row"><div class="key-grp"><kbd>zK</kbd></div><div class="desc">폴드 미리보기/호버</div></div>
+        </div>
+      </div>
+      <div class="sec c-blue">
+        <div class="sec-head">Buffers</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-b">⇧H</kbd></div><div class="desc hi">이전 버퍼</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-b">⇧L</kbd></div><div class="desc hi">다음 버퍼</div></div>
+          <div class="row"><div class="key-grp"><kbd>[b</kbd><span class="slash">/</span><kbd>]b</kbd></div><div class="desc">이전/다음 버퍼</div></div>
+        </div>
+      </div>
+      <div class="sec c-orange">
+        <div class="sec-head">Windows</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd>^w s</kbd><span class="slash">/</span><kbd>^w v</kbd></div><div class="desc">수평/수직 분할</div></div>
+          <div class="row"><div class="key-grp"><kbd>^w hjkl</kbd></div><div class="desc">창 이동</div></div>
+          <div class="row"><div class="key-grp"><kbd>^w q</kbd></div><div class="desc">창 닫기</div></div>
+          <div class="row"><div class="key-grp"><kbd>^w =</kbd></div><div class="desc">크기 균등</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ COL 4: LSP + GLANCE + MULTI-CURSOR ════ -->
+    <div class="col">
+      <div class="sec c-cyan">
+        <div class="sec-head">LSP / Code</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-c">gd</kbd></div><div class="desc hi">정의로 이동</div></div>
+          <div class="row"><div class="key-grp"><kbd>gD</kbd></div><div class="desc">선언으로 이동</div></div>
+          <div class="row"><div class="key-grp"><kbd>gI</kbd></div><div class="desc">구현으로 이동</div></div>
+          <div class="row"><div class="key-grp"><kbd>gy</kbd></div><div class="desc">타입 정의</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-c">gr</kbd></div><div class="desc hi">참조 찾기</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-c">K</kbd></div><div class="desc hi">호버 문서</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ca</kbd></div><div class="desc">코드 액션</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵cr</kbd></div><div class="desc">이름 변경</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵cf</kbd></div><div class="desc">포맷</div></div>
+        </div>
+      </div>
+      <div class="sec c-teal">
+        <div class="sec-head">Glance (미리보기)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-t">gpd</kbd></div><div class="desc hi">정의 미리보기</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-t">gpr</kbd></div><div class="desc hi">참조 미리보기</div></div>
+          <div class="row"><div class="key-grp"><kbd>gpt</kbd></div><div class="desc">타입 정의 미리보기</div></div>
+          <div class="row"><div class="key-grp"><kbd>gpi</kbd></div><div class="desc">구현 미리보기</div></div>
+        </div>
+      </div>
+      <div class="sec c-pink">
+        <div class="sec-head">Multi-cursor</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-p">^d</kbd></div><div class="desc hi">단어 선택 추가 (VSC)</div></div>
+          <div class="row"><div class="key-grp"><kbd>^↓</kbd><span class="slash">/</span><kbd>^↑</kbd></div><div class="desc">커서 아래/위 추가</div></div>
+          <div class="row"><div class="key-grp"><kbd>^⌥n</kbd></div><div class="desc">전체 선택</div></div>
+          <div class="row"><div class="key-grp"><kbd>ESC</kbd></div><div class="desc">멀티커서 종료</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ COL 5: TROUBLE + OUTLINE + TS-CTX + MINIMAP + DROPBAR ════ -->
+    <div class="col">
+      <div class="sec c-red">
+        <div class="sec-head">Trouble (진단)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-r">⎵xx</kbd></div><div class="desc hi">전체 진단 토글</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵xX</kbd></div><div class="desc">버퍼 진단</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵cs</kbd></div><div class="desc">심볼 (n)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵xL</kbd><span class="slash">/</span><kbd>⎵xQ</kbd></div><div class="desc">LocList / Quickfix</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵xr</kbd></div><div class="desc">LSP 참조/정의</div></div>
+        </div>
+      </div>
+      <div class="sec c-purple">
+        <div class="sec-head">Outline</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-pu">⎵O</kbd></div><div class="desc hi">아웃라인 토글</div></div>
+        </div>
+      </div>
+      <div class="sec c-cyan">
+        <div class="sec-head">TS Context</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd>⎵tc</kbd></div><div class="desc">컨텍스트 고정 토글</div></div>
+        </div>
+      </div>
+      <div class="sec c-purple">
+        <div class="sec-head">Remote SSH</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-pu">⎵rc</kbd></div><div class="desc hi">원격 접속 시작</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ri</kbd></div><div class="desc">원격 정보 확인</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵rq</kbd></div><div class="desc">원격 접속 중지</div></div>
+        </div>
+      </div>
+      <div class="sec c-yellow">
+        <div class="sec-head">Dropbar</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-y">⎵.</kbd></div><div class="desc hi">Breadcrumb 픽</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ COL 6: TELESCOPE + HARPOON + EXPLORER + TERMINAL ════ -->
+    <div class="col">
+      <div class="sec c-blue">
+        <div class="sec-head">Telescope (검색)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-b">⎵ff</kbd></div><div class="desc hi">파일 찾기</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-b">⎵fg</kbd></div><div class="desc hi">Live Grep</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵fb</kbd></div><div class="desc">버퍼 찾기</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵fh</kbd></div><div class="desc">도움말 태그</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵fp</kbd></div><div class="desc">프로젝트 목록</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵st</kbd></div><div class="desc">TODO 검색</div></div>
+        </div>
+      </div>
+      <div class="sec c-orange">
+        <div class="sec-head">Harpoon</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-o">⎵ha</kbd></div><div class="desc hi">파일 추가</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-o">⎵hh</kbd></div><div class="desc hi">메뉴 열기</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵h1</kbd><kbd>⎵h2</kbd><kbd>⎵h3</kbd><kbd>⎵h4</kbd></div><div class="desc">북마크 1~4</div></div>
+          <div class="row"><div class="key-grp"><kbd>[h</kbd><span class="slash">/</span><kbd>]h</kbd></div><div class="desc">이전/다음</div></div>
+        </div>
+      </div>
+      <div class="sec c-teal">
+        <div class="sec-head">Explorer + Terminal</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-t">⎵e</kbd></div><div class="desc hi">탐색기 (프로젝트)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵E</kbd></div><div class="desc">탐색기 (현재 파일)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵-</kbd></div><div class="desc">Oil 상위 폴더</div></div>
+          <hr class="div">
+          <div class="row"><div class="key-grp"><kbd class="hi-t">⎵tf</kbd></div><div class="desc hi">플로팅 터미널</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ts</kbd></div><div class="desc">스플릿 터미널</div></div>
+        </div>
+      </div>
+      <div class="sec c-pink">
+        <div class="sec-head">CodeSnap</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-p">⎵cs</kbd></div><div class="desc hi">CodeSnap (v)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵cS</kbd></div><div class="desc">저장 (v)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ COL 7: GIT ════ -->
+    <div class="col">
+    <div class="sec c-green">
+      <div class="sec-head">Git</div>
+      <div class="sec-body">
+        <div class="sub">LazyGit</div>
+        <div class="row"><div class="key-grp"><kbd class="hi-g">⎵gg</kbd></div><div class="desc hi">LazyGit 열기</div></div>
+        <hr class="div">
+        <div class="sub">Gitsigns · Hunk</div>
+        <div class="row"><div class="key-grp"><kbd class="hi-g">]c</kbd></div><div class="desc hi">다음 Hunk</div></div>
+        <div class="row"><div class="key-grp"><kbd class="hi-g">[c</kbd></div><div class="desc hi">이전 Hunk</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵hs</kbd></div><div class="desc">Hunk 스테이지</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵hr</kbd></div><div class="desc">Hunk 리셋</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵hu</kbd></div><div class="desc">스테이지 취소</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵hp</kbd></div><div class="desc">Hunk 미리보기</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵hb</kbd></div><div class="desc">Blame 줄</div></div>
+        <hr class="div">
+        <div class="sub">Diffview</div>
+        <div class="row"><div class="key-grp"><kbd>⎵go</kbd></div><div class="desc">Diff 열기</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵gc</kbd></div><div class="desc">Diff 닫기</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵gh</kbd></div><div class="desc">파일 히스토리</div></div>
+        <hr class="div">
+        <div class="sub">Fugit2</div>
+        <div class="row"><div class="key-grp"><kbd>⎵gS</kbd></div><div class="desc">Fugit2 상태</div></div>
+        <div class="row"><div class="key-grp"><kbd>⎵gG</kbd></div><div class="desc">Fugit2 그래프</div></div>
+        <hr class="div">
+        <div class="sub">Database</div>
+        <div class="row"><div class="key-grp"><kbd class="hi-b">⎵D</kbd></div><div class="desc hi">DBUI 토글</div></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ════ COL 8: DAP + NEOTEST ════ -->
+    <div class="col">
+      <div class="sec c-red">
+        <div class="sec-head">DAP (Debug)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-r">⎵db</kbd></div><div class="desc hi">브레이크포인트</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-r">⎵dc</kbd></div><div class="desc hi">시작 / 계속</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵di</kbd></div><div class="desc">Step Into</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵do</kbd></div><div class="desc">Step Over</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵dO</kbd></div><div class="desc">Step Out</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵dr</kbd></div><div class="desc">DAP REPL</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵dl</kbd></div><div class="desc">마지막 실행</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵du</kbd></div><div class="desc">DAP UI 토글</div></div>
+        </div>
+      </div>
+      <div class="sec c-green">
+        <div class="sec-head">Neotest (Test)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-g">⎵Tr</kbd></div><div class="desc hi">가장 가까운 테스트</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-g">⎵Tf</kbd></div><div class="desc hi">파일 전체 테스트</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵Ts</kbd></div><div class="desc">요약 패널</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵To</kbd></div><div class="desc">출력 패널</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵Tx</kbd></div><div class="desc">테스트 중지</div></div>
+          <div class="row"><div class="key-grp"><kbd>]T</kbd><span class="slash">/</span><kbd>[T</kbd></div><div class="desc">다음/이전 실패</div></div>
+        </div>
+      </div>
+      <div class="sec c-teal">
+        <div class="sec-head">Flutter</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-t">⎵Fr</kbd></div><div class="desc hi">Flutter Run</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-t">⎵FH</kbd></div><div class="desc hi">Hot Reload</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵FR</kbd></div><div class="desc">Hot Restart</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵Fd</kbd></div><div class="desc">디바이스 목록</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵Fo</kbd></div><div class="desc">Outline 토글</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵Fq</kbd></div><div class="desc">Quit</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ COL 9: AVANTE + COPILOT + MISC ════ -->
+    <div class="col">
+      <div class="sec c-pink">
+        <div class="sec-head">Avante (AI · Claude)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-p">⎵aa</kbd></div><div class="desc hi">Avante 질문</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-p">⎵at</kbd></div><div class="desc hi">Avante 토글</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ae</kbd></div><div class="desc">선택 편집 (v)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵af</kbd></div><div class="desc">포커스</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ar</kbd></div><div class="desc">새로고침</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵am</kbd></div><div class="desc">모델 전환</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ap</kbd></div><div class="desc">프로바이더 전환</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵as</kbd></div><div class="desc">중지</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵an</kbd></div><div class="desc">새 채팅</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ah</kbd></div><div class="desc">히스토리</div></div>
+          <div class="row"><div class="key-grp"><kbd>y</kbd><span class="slash">/</span><kbd>n</kbd></div><div class="desc">충돌 수락/거절</div></div>
+        </div>
+      </div>
+      <div class="sec c-cyan">
+        <div class="sec-head">Copilot (Insert)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-c">^l</kbd></div><div class="desc hi">제안 수락</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-c">^j</kbd></div><div class="desc hi">단어 수락</div></div>
+          <div class="row"><div class="key-grp"><kbd>^;</kbd><span class="slash">/</span><kbd>^,</kbd></div><div class="desc">다음/이전 제안</div></div>
+          <div class="row"><div class="key-grp"><kbd>^]</kbd></div><div class="desc">제안 취소</div></div>
+        </div>
+      </div>
+      <div class="sec c-teal">
+        <div class="sec-head">Obsidian</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-t">⎵op</kbd></div><div class="desc hi">프로젝트 노트 열기</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-t">⎵od</kbd></div><div class="desc hi">데일리 노트</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵os</kbd></div><div class="desc">노트 검색 (n)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵os</kbd></div><div class="desc">스니펫 전송 (v)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ob</kbd></div><div class="desc">백링크</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ot</kbd></div><div class="desc">태그 검색</div></div>
+        </div>
+      </div>
+      <div class="sec c-orange">
+        <div class="sec-head">Molten (Jupyter)</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd class="hi-o">⎵mi</kbd></div><div class="desc hi">커널 초기화</div></div>
+          <div class="row"><div class="key-grp"><kbd class="hi-o">⎵ml</kbd></div><div class="desc hi">현재 줄 실행</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵mc</kbd></div><div class="desc">셀 재실행</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵mr</kbd></div><div class="desc">선택 실행 (v)</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵mo</kbd></div><div class="desc">출력창 포커스</div></div>
+        </div>
+      </div>
+      <div class="sec c-yellow">
+        <div class="sec-head">Misc</div>
+        <div class="sec-body">
+          <div class="row"><div class="key-grp"><kbd>⎵tt</kbd></div><div class="desc">테마 토글</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵ng</kbd></div><div class="desc">문서 주석</div></div>
+          <div class="row"><div class="key-grp"><kbd>,v</kbd><span class="slash">/</span><kbd>,V</kbd></div><div class="desc">Python venv</div></div>
+          <div class="row"><div class="key-grp"><kbd>⎵nh</kbd></div><div class="desc">알림 히스토리</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>⎵ = <span class="glow">Space (leader)</span> &nbsp;│&nbsp; ^ = Ctrl &nbsp;│&nbsp; ⇧ = Shift &nbsp;│&nbsp; ⌥/⌘ = Alt/Cmd</span>
+    <span>
+      <span class="pill">flash</span>
+      <span class="pill">harpoon</span>
+      <span class="pill">telescope</span>
+      <span class="pill">glance</span>
+      <span class="pill">multicursor</span>
+      <span class="pill">neotest</span>
+      <span class="pill">avante</span>
+      <span class="pill">copilot</span>
+      <span class="pill">dap</span>
+      <span class="pill">gitsigns</span>
+      <span class="pill">ufo</span>
+      <span class="pill">obsidian</span>
+      <span class="pill">molten</span>
+      <span class="pill">flutter</span>
+      <span class="pill">dadbod</span>
+      <span class="pill">codesnap</span>
+    </span>
+    <span class="glow">Cyberdream · LazyVim</span>
+  </div>
+
+</div><!-- /page -->
+
+</body>
+</html>

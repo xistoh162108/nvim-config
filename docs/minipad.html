@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Nvim Minipad Cheat Sheet (8x9cm)</title>
+  <style>
+    /* 8cm x 9cm */
+    @page { size: 8cm 9cm; margin: 0; }
+    body {
+      margin: 0; padding: 0;
+      background-color: #0f111a;
+      color: #c0caf5;
+      font-family: 'Geist Mono', 'Fira Code', 'Apple SD Gothic Neo', monospace;
+      font-size: 7px;
+      display: flex; justify-content: center; align-items: flex-start;
+      height: 9cm; width: 8cm; box-sizing: border-box; overflow: hidden;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .card {
+      width: 100%; height: 100%; padding: 4px;
+      display: flex; flex-direction: column; box-sizing: border-box; gap: 4px;
+    }
+    h1 {
+      font-size: 9px; margin: 0 0 2px 0; text-align: center;
+      color: #00e5ff; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; /* 2 Columns */
+      height: 100%;
+    }
+    .col { display: flex; flex-direction: column; gap: 4px; }
+    
+    .sec {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-top: 1.5px solid #3b4261; border-radius: 2px; padding: 2.5px 3.5px;
+    }
+    .sec-t {
+      font-size: 6.8px; color: #39ff14; font-weight: bold;
+      border-bottom: 0.5px solid #292e42; margin-bottom: 3px; padding-bottom: 1.5px;
+      text-transform: uppercase; letter-spacing: 0.2px;
+    }
+    /* Section Colors */
+    .c1 { border-top-color: #00e5ff; } .c1 .sec-t { color: #00e5ff; } 
+    .c2 { border-top-color: #ffee00; } .c2 .sec-t { color: #ffee00; }
+    .c3 { border-top-color: #ff3355; } .c3 .sec-t { color: #ff3355; }
+    .c4 { border-top-color: #4da6ff; } .c4 .sec-t { color: #4da6ff; }
+    .c5 { border-top-color: #39ff14; } .c5 .sec-t { color: #39ff14; }
+    .c6 { border-top-color: #bf40ff; } .c6 .sec-t { color: #bf40ff; }
+
+    /* Flex-based rows instead of tables for tighter layout but still tabular */
+    .row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.8px 0; margin-bottom: 0.5px;
+    }
+    
+    .k-grp { 
+      display: flex; gap: 1.5px; flex-shrink: 0; min-width: 48%; /* Adjust to force alignment */
+    }
+    .k-ext { color: #ff00ff; font-weight: bold; font-size: 7px; line-height: 1.2;}
+    
+    .desc { 
+      color: #a9b1d6; font-size: 6px; text-align: right; 
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;
+    }
+    kbd { 
+      background: #1f2335; border: 0.5px solid #3b4261; border-radius: 2px;
+      padding: 0.5px 2px; color: #7aa2f7; font-size: 6px; font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Neovim Core | <kbd>Spc</kbd> = Leader</h1>
+    <div class="grid">
+      <!-- Col 1 -->
+      <div class="col">
+        <!-- 1. Move & Edit -->
+        <div class="sec c1">
+          <div class="sec-t">Move & Edit</div>
+          <div class="row"><div class="k-grp"><span class="k-ext">hjkl</span></div><div class="desc">상하좌우 이동</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">w / b / e</span></div><div class="desc">단어점프 앞/뒤/끝</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">^d / ^u</span></div><div class="desc">반페이지 하/상</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">dd / yy</span></div><div class="desc">현재 줄 삭제/복사</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">p / P</span></div><div class="desc">뒤/앞에 붙여넣기</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">u / ^r</span></div><div class="desc">취소/재실행</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">ciw / diw</span></div><div class="desc">단어 안 변경/삭제</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">ci"</span></div><div class="desc">따옴표 안쪽 변경</div></div>
+        </div>
+        
+        <!-- 2. Window & Buffer -->
+        <div class="sec c4">
+          <div class="sec-t">Windows & Buffers</div>
+          <div class="row"><div class="k-grp"><kbd>⇧</kbd> <span class="k-ext">H / L</span></div><div class="desc">이전/다음 탭</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">bd</span></div><div class="desc">현재 버퍼 닫기</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">^wv / ^ws</span></div><div class="desc">수직/수평 창분할</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">^whjkl</span></div><div class="desc">분할창 포커스이동</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">^w= / ^wq</span></div><div class="desc">크기맞춤 / 닫기</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">:w / :qa</span></div><div class="desc">저장/모두종료</div></div>
+        </div>
+
+        <!-- 3. DB & Misc -->
+        <div class="sec c3">
+          <div class="sec-t">DB & Misc</div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">D</span></div><div class="desc">DBUI 토글</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">tt</span></div><div class="desc">스킨(다크/라이트)</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">nh</span></div><div class="desc">알림 기록조회</div></div>
+        </div>
+      </div>
+      
+      <!-- Col 2 -->
+      <div class="col">
+        <!-- 4. Flash & Harpoon -->
+        <div class="sec c2">
+          <div class="sec-t">Flash & Harpoon</div>
+          <div class="row"><div class="k-grp"><span class="k-ext">s / S</span></div><div class="desc">Flash 화면점프</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">/</span></div><div class="desc">버퍼 텍스트 찾기</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">%</span></div><div class="desc">매칭 괄호점프</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">ha</span></div><div class="desc">Harpoon 마크추가</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">hh</span></div><div class="desc">Harpoon 메뉴목록</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">h1~4</span></div><div class="desc">1~4번 마크점프</div></div>
+        </div>
+
+        <!-- 5. Search & Explore -->
+        <div class="sec c5">
+          <div class="sec-t">Search & Explorer</div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">e</span></div><div class="desc">왼쪽 트리탐색기</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">-</span></div><div class="desc">오일 탐색기(상위)</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">ff</span></div><div class="desc">파일 찾기</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">fg</span></div><div class="desc">Live Grep 검색</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">fb</span></div><div class="desc">열린 버퍼검색</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">st</span></div><div class="desc">TODO/Fixme찾기</div></div>
+        </div>
+
+        <!-- 6. LSP & Tools -->
+        <div class="sec c6">
+          <div class="sec-t">LSP Code & Tools</div>
+          <div class="row"><div class="k-grp"><span class="k-ext">gd / K</span></div><div class="desc">정의이동/호버문서</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">ca</span></div><div class="desc">Code Action(수정)</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">cr</span></div><div class="desc">이름 일괄변경</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">cf</span></div><div class="desc">코드 포맷팅(정렬)</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">xx</span></div><div class="desc">Trouble(에러목록)</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">]c / [c</span></div><div class="desc">다음/이전 Hunk</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">gg</span></div><div class="desc">LazyGit 열기</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">aa</span></div><div class="desc">Avante AI 채팅</div></div>
+          <div class="row"><div class="k-grp"><kbd>Spc</kbd> <span class="k-ext">rc</span></div><div class="desc">Remote SSH 접속</div></div>
+          <div class="row"><div class="k-grp"><span class="k-ext">^l</span></div><div class="desc">Copilot 추천수락</div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
