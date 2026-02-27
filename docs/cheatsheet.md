@@ -124,14 +124,22 @@
 | `R` | o/x | Treesitter 검색 |
 | `<C-s>` | cmd | Flash 검색 토글 |
 
-### Multi-cursor (vim-visual-multi)
+| `<Esc>` | 멀티커서 종료 |
+
+### Overseer (태스크 매니저)
 
 | 키 | 설명 |
 |----|------|
-| `<C-d>` | 커서 단어 하나씩 추가 선택 (VSCode Ctrl+D) |
-| `<C-Down>` / `<C-Up>` | 커서 아래/위 추가 |
-| `<C-A-n>` | 커서 단어 전체 선택 |
-| `<Esc>` | 멀티커서 종료 |
+| `<leader>tr` | 태스크 실행 (OverseerRun) |
+| `<leader>tt` | 태스크 목록 토글 |
+| `<leader>tc` | 태스크 빌드 (OverseerBuild) |
+| `<leader>ti` | 태스크 정보 |
+
+### Navigation (Cross-tool)
+
+| 키 | 설명 |
+|----|------|
+| `<C-h/j/k/l>` | Neovim 스플릿 ↔ Tmux 패널 이동 |
 
 ### Bufferline (버퍼)
 
@@ -222,11 +230,13 @@
 | `<leader>xQ` | Quickfix List |
 | `<leader>xr` | LSP 참조/정의 (Trouble) |
 
-### Outline
+| `<leader>O` | 코드 아웃라인 토글 |
+
+### Undotree (히스토리 시각화)
 
 | 키 | 설명 |
 |----|------|
-| `<leader>O` | 코드 아웃라인 토글 |
+| `<leader>ut` | 무한 Undo 트리 토글 |
 
 ### Treesitter Context
 
@@ -392,14 +402,23 @@ _Use `render-markdown.nvim` which handles in-editor rendering automatically._
 | `\lv` | PDF 포워드 검색 (nvim → Skim) |
 | `\le` | 컴파일 에러 목록 열기 |
 
-### Flutter (flutter-tools)
-
-| 키 | 설명 |
-|----|------|
 | `<leader>Fd` | 연결된 디바이스 목록 |
 | `<leader>Fr` | Flutter Run |
 | `<leader>FH` | Hot Reload |
 | `<leader>FR` | Hot Restart |
+
+### Low-Level & Academic
+
+| 키 | 설명 |
+|----|------|
+| `<leader>ce` | Compiler Explorer (C → ASM 실시간 변환) |
+| `<leader>hx` | HexView 토글 (바이너리 분석) |
+| `K` (asm파일) | 어셈블리 명령어(Opcode) 도움말 호버 |
+| `!header` | (Insert) 과제용 헤더 템플릿 생성 |
+| `!socket` | (Insert) C 네트워크 소켓 프로그래밍 템플릿 |
+| `!asm_temp` | (Insert) x86_64 어셈블리 기본 템플릿 |
+| `<leader>fX` | (Fun) Cellular Automaton: Make it Rain! |
+| `<leader>fG` | (Fun) Cellular Automaton: Game of Life |
 
 ---
 

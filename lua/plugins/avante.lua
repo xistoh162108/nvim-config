@@ -164,6 +164,29 @@ return {
       { "<leader>aR", "<cmd>AvanteShowRepoMap<cr>", desc = "Avante RepoMap" },
       { "<leader>am", "<cmd>AvanteModels<cr>", desc = "Avante Models" },
       { "<leader>ap", "<cmd>AvanteSwitchProvider<cr>", desc = "Avante Switch Provider" },
+      { "<leader>ad", function()
+        -- Agentic Debug: 현재 버퍼의 Diagnostics(에러)를 수집하여 Avante에게 전달
+        local diagnostics = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+        if #diagnostics == 0 then
+          diagnostics = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+        end
+        
+        if #diagnostics == 0 then
+          vim.notify("No diagnostics found to debug!", vim.log.levels.INFO)
+          return
+        end
+
+        local error_messages = {}
+        for _, diag in ipairs(diagnostics) do
+          table.insert(error_messages, string.format("Line %d: %s", diag.lnum + 1, diag.message))
+        end
+
+        local prompt = "I have the following diagnostics in this file:\n\n" .. 
+                       table.concat(error_messages, "\n") .. 
+                       "\n\nPlease analyze these errors and suggest a fix."
+        
+        require("avante.api").ask({ question = prompt })
+      end, desc = "Avante Debug (Diagnostics Fix)" },
       { "<leader>as", "<cmd>AvanteStop<cr>", desc = "Avante Stop" },
       { "<leader>an", "<cmd>AvanteChatNew<cr>", desc = "Avante New Chat" },
       { "<leader>ah", "<cmd>AvanteHistory<cr>", desc = "Avante History" },

@@ -54,4 +54,37 @@ return {
       })
     end,
   },
+
+  -- mini.ai: 수술용 텍스트 객체 (Surgical Text Objects)
+  --   Treesitter가 '함수', '클래스' 같은 큰 구조를 담당한다면,
+  --   mini.ai는 '인자(argument)', '괄호 내용', '코드 블록' 등
+  --   더 미세하고 정교한 범위를 똑똑하게 잡아줍니다.
+  {
+    "nvim-mini/mini.ai",
+    event = "VeryLazy",
+    opts = function()
+      local ai = require("mini.ai")
+      return {
+        n_lines = 500,
+        custom_textobjects = {
+          o = ai.gen_spec.treesitter({ -- code block
+            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
+          }, {}),
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }, {}), -- function
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }, {}),    -- class
+          t = { "<([%p%w]-)%f[^<%w][^<>]->.-</%1>", "^<.->().*()</[^<>]->$" },          -- tags
+          d = { "%f[%d]%d+" }, -- digits
+          e = { -- Word with case
+            { "%u[%l%d]+%f[^%l%d]", "%f[%S][%l%d]+%f[^%l%d]", "%f[%P][%l%d]+%f[^%l%d]", "^[%l%d]+%f[^%l%d]" },
+            "^().*()$",
+          },
+          g = ai.gen_spec.treesitter({ -- 전체 버퍼
+            a = "@buffer.outer",
+            i = "@buffer.inner",
+          }, {}),
+        },
+      }
+    end,
+  },
 }

@@ -466,6 +466,12 @@ local obsidian_color_group = vim.api.nvim_create_augroup("ObsidianWindowAestheti
 
 -- 하이라이트 그룹 정의
 vim.api.nvim_set_hl(0, "ObsidianWinSeparator", { fg = "#bb9af7", bold = true })
+-- 글로벌 상태바 상단 경계선 (네이티브 overline 방식)
+-- Neovim 버전/빌드에 따라 overline 키가 에러를 유발할 수 있어 pcall로 감쌈
+pcall(function()
+  vim.api.nvim_set_hl(0, "StatusLine", { overline = true, sp = "#00e5ff" })
+  vim.api.nvim_set_hl(0, "StatusLineNC", { overline = true, sp = "#00e5ff" })
+end)
 
 vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FocusGained" }, {
   group = obsidian_color_group,
@@ -490,11 +496,17 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FocusGained" }, {
       if is_obsidian then
         -- 1. 글로벌 ColorfulWinsep 색상 변경 (Active Border 색상 테마)
         pcall(vim.api.nvim_set_hl, 0, "ColorfulWinsep", { fg = "#bb9af7", bold = true }) 
-        -- 2. 현재 창의 WinSeparator 하이라이트 덮어쓰기
+        -- 2. 상태바 상단 overline 색상 동기화 (Purple)
+        pcall(vim.api.nvim_set_hl, 0, "StatusLine", { overline = true, sp = "#bb9af7" })
+        pcall(vim.api.nvim_set_hl, 0, "StatusLineNC", { overline = true, sp = "#bb9af7" })
+        -- 3. 현재 창의 WinSeparator 하이라이트 덮어쓰기
         pcall(vim.api.nvim_set_option_value, "winhl", "WinSeparator:ObsidianWinSeparator", { win = win })
       else
         -- 기본 색상 (Cyan / TokyoNight 스타일)
         pcall(vim.api.nvim_set_hl, 0, "ColorfulWinsep", { fg = "#00e5ff", bold = true })
+        -- 상태바 상단 overline 색상 동기화 (Cyan)
+        pcall(vim.api.nvim_set_hl, 0, "StatusLine", { overline = true, sp = "#00e5ff" })
+        pcall(vim.api.nvim_set_hl, 0, "StatusLineNC", { overline = true, sp = "#00e5ff" })
         
         -- 만약 Obsidian 전용 하이라이트가 걸려있다면 제거
         local r_ok, curr_winhl = pcall(vim.api.nvim_get_option_value, "winhl", { win = win })

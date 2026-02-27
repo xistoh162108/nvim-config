@@ -187,6 +187,37 @@ return {
         },
       }
 
+      ---------------------------------------------------------------------------
+      -- Python: Remote Attach (ML/AI GPU Servers)
+      ---------------------------------------------------------------------------
+      dap.configurations.python = {
+        {
+          type = "python",
+          request = "launch",
+          name = "Launch file",
+          program = "${file}",
+          pythonPath = function()
+            local venv = vim.env.VIRTUAL_ENV
+            if venv then
+              return venv .. "/bin/python"
+            end
+            return "python3"
+          end,
+        },
+        {
+          type = "python",
+          request = "attach",
+          name = "Attach: Remote (debugpy)",
+          connect = function()
+            local host = vim.fn.input("Host [127.0.0.1]: ")
+            host = host ~= "" and host or "127.0.0.1"
+            local port = tonumber(vim.fn.input("Port [5678]: "))
+            port = port or 5678
+            return { host = host, port = port }
+          end,
+        },
+      }
+
       dap.configurations.typescript = dap.configurations.javascript
       dap.configurations.javascriptreact = dap.configurations.javascript
       dap.configurations.typescriptreact = dap.configurations.javascript

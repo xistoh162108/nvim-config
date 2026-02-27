@@ -49,7 +49,9 @@ end, { desc = "Blame Line" })
 
 -- LSP (Language Server Protocol)
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to Definition" })
-vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover Documentation" })
+vim.keymap.set("n", "K", function()
+  vim.lsp.buf.hover({ border = "rounded" })
+end, { desc = "Hover Documentation" })
 vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
 vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
 vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename Symbol" })
@@ -241,101 +243,3 @@ end, { desc = "Toggle Floating Cheatsheet" })
 -- ALL KEYMAPS SEARCH
 vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "Search Keymaps" })
 
--- ===========================
--- OBSIDIAN PROJECT EXPLORERS
--- ===========================
-vim.keymap.set("n", "<leader>oe", function()
-  local ok, obs = pcall(require, "core.obsidian_project")
-  if not ok then return end
-  local project_name, status = obs.get_current_project_info()
-  if not project_name then
-    vim.notify("🚫 프로젝트 관리 대상 폴더가 아닙니다.", vim.log.levels.WARN, { title = "Obsidian Explorer" })
-    return
-  end
-  local act_dir, arc_dir = obs.get_obsidian_dirs()
-  local target_dir = (status == "archive" and arc_dir or act_dir) .. "/" .. project_name
-  -- Neo-tree 대신 설치되어 있는 oil.nvim (또는 snacks.explorer) 활용
-  local ok_oil, oil = pcall(require, "oil")
-  if ok_oil then
-    oil.open(target_dir)
-  else
-    vim.notify("파일 탐색기(oil.nvim)를 찾을 수 없습니다.", vim.log.levels.ERROR)
-  end
-end, { desc = "Obsidian Project Explorer" })
-
-vim.keymap.set("n", "<leader>of", function()
-  local ok, obs = pcall(require, "core.obsidian_project")
-  if not ok then return end
-  local project_name, status = obs.get_current_project_info()
-  if not project_name then
-    vim.notify("🚫 프로젝트 관리 대상 폴더가 아닙니다.", vim.log.levels.WARN, { title = "Obsidian Finder" })
-    return
-  end
-  local act_dir, arc_dir = obs.get_obsidian_dirs()
-  local target_dir = (status == "archive" and arc_dir or act_dir) .. "/" .. project_name
-  
-  -- Telescope로 해당 폴더 내 파일 검색
-  require("telescope.builtin").find_files({ 
-    search_dirs = { target_dir },
-    prompt_title = "Obsidian: " .. project_name 
-  })
-end, { desc = "Obsidian Project Finder" })
-
--- ===========================
--- OBSIDIAN PROJECT ARCHIVING
--- ===========================
-vim.keymap.set("n", "<leader>oa", function()
-  local ok, obs = pcall(require, "core.obsidian_project")
-  if not ok then return end
-  
-  local project_name, status, code_root = obs.get_current_project_info()
-  if not project_name then
-    vim.notify("🚫 프로젝트 관리 대상 폴더가 아닙니다.", vim.log.levels.WARN, { title = "Obsidian Archive" })
-    return
-  end
-  
-  if status == "archive" then
-    vim.notify("📦 이미 아카이브된 프로젝트입니다.", vim.log.levels.INFO, { title = "Obsidian Archive" })
-    return
-  end
-  
-  -- 확인 프롬프트
-  vim.ui.select({"Yes", "No"}, {
-    prompt = string.format("정말 '%s' 프로젝트를 동기화 아카이브 하시겠습니까? (버퍼 닫힘 주의)", project_name)
-  }, function(choice)
-    if choice == "Yes" then
-      local act_obs, arc_obs = obs.get_obsidian_dirs()
-      local act_code, arc_code = obs.get_code_dirs()
-      
-      local target_obs_dir = arc_obs .. "/" .. project_name
-      local target_code_dir = arc_code .. "/" .. project_name
-      local source_obs_dir = act_obs .. "/" .. project_name
-      
-      -- 1. 모든 버퍼 저장 및 닫기
-      vim.cmd("wa")
-      vim.cmd("%bd")
-      
-      -- 2. cwd 안전영역으로 회피
-      vim.fn.chdir(vim.fn.expand("~"))
-      
-      -- 3. 시스템 이동 수행
-      vim.fn.mkdir(arc_code, "p")
-      vim.fn.mkdir(arc_obs, "p")
-      
-      local code_mv = string.format("mv '%s' '%s'", code_root, target_code_dir)
-      vim.fn.system(code_mv)
-      
-      if vim.fn.isdirectory(source_obs_dir) == 1 then
-        local obs_mv = string.format("mv '%s' '%s'", source_obs_dir, target_obs_dir)
-        vim.fn.system(obs_mv)
-      end
-      
-      -- 4. 완료 알림
-      vim.notify(
-        string.format("📦 프로젝트 아카이브 완료!\nCode -> %s\nNote -> %s", arc_code, arc_obs),
-        vim.log.levels.INFO,
-        { title = "Obsidian Project" }
-      )
-    end
-  end)
-end, { desc = "Archive Obsidian Project" })

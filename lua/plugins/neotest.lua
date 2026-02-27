@@ -37,6 +37,11 @@ return {
         desc = "Test: Stop",
       },
       {
+        "<leader>Td",
+        function() require("neotest").run.run({ strategy = "dap" }) end,
+        desc = "Test: Debug nearest",
+      },
+      {
         "]T",
         function() require("neotest").jump.next({ status = "failed" }) end,
         desc = "Next failed test",
@@ -49,6 +54,8 @@ return {
     },
     config = function()
       require("neotest").setup({
+        discovery = { enabled = false }, -- 대규모 ML 프로젝트에서 성능 향상
+        diagnostic = { enabled = true },
         adapters = {
           require("neotest-python")({
             runner = "pytest",
