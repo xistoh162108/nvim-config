@@ -14,7 +14,7 @@ return {
           return vim.o.columns * 0.4
         end
       end,
-      open_mapping = [[<c-\>]], -- 기본 터미널 토글 단축키
+      -- open_mapping removed: ToggleTerm is REPL backend only. UI terminal via Snacks.
       hide_numbers = true,
       shade_terminals = true,
       start_in_insert = true,
@@ -30,9 +30,8 @@ return {
       },
     },
     keys = {
-      { "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", desc = "Terminal: Float" },
-      { "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", desc = "Terminal: Vertical" },
-      { "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Terminal: Horizontal" },
+      -- UI keymaps removed: <leader>tf/tv/th now belong to Snacks.terminal
+      -- ToggleTerm is invoked only by iron.nvim internals (repl_open_cmd)
     },
   },
 

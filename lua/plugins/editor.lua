@@ -57,10 +57,11 @@ return {
     "stevearc/oil.nvim",
     cmd = "Oil",
     keys = {
-      { "<leader>-", "<cmd>Oil<CR>", desc = "Open parent directory (Oil)" },
+      { "<leader>-", "<cmd>Oil<CR>", desc = "Explorer: Quick (Oil)" },
+      { "<leader>e", "<cmd>Oil<CR>", desc = "Explorer: Primary (Oil)" },
     },
     opts = {
-      default_file_explorer = false,
+      default_file_explorer = true, -- Disables netrw; nvim . → oil
       skip_confirm_for_simple_edits = true,
       view_options = { show_hidden = true },
     },

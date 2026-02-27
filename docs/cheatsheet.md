@@ -230,7 +230,7 @@
 | `<leader>xQ` | Quickfix List |
 | `<leader>xr` | LSP 참조/정의 (Trouble) |
 
-| `<leader>O` | 코드 아웃라인 토글 |
+| `<leader>O` | Aerial 코드 심볼 맵 토글 (파일 열면 자동 열림) |
 
 ### Undotree (히스토리 시각화)
 
@@ -315,12 +315,15 @@
 | `zp` | 폴드 미리보기 |
 | `zK` | 폴드 미리보기 or 호버 |
 
-### Terminal
+### Terminal (Snacks)
 
 | 키 | 설명 |
 |----|------|
-| `<leader>tf` | 플로팅 터미널 토글 |
-| `<leader>ts` | 스플릿 터미널 토글 |
+| `<leader>tf` | 플로팅 터미널 (Snacks) |
+| `<leader>tv` | 수직 터미널 (Snacks) |
+| `<leader>th` | 수평 터미널 (Snacks) |
+
+> ToggleTerm은 iron.nvim REPL 백엔드 전용으로 내부에서만 사용됩니다.
 
 ### Markdown Preview (Disabled by default)
 
@@ -360,25 +363,38 @@ _Use `render-markdown.nvim` which handles in-editor rendering automatically._
 | `<CR>` | (위젯) | 커서 종목 차트 웹 브라우저로 열기 |
 | `q` / `<ESC>` | (위젯) | 위젯 닫기 |
 
+### Explorer & Navigation
+
+| 키 | 설명 |
+|----|------|
+| `<leader>e` | **Oil 탐색기 열기** (Primary) |
+| `<leader>-` | Oil: 부모 디렉토리 빠른 열기 |
+| `<leader>fe` | Neo-tree 사이드바 (Secondary) |
+| `gf` | `[[링크]]` 위에서 해당 노트로 이동 |
+
 ### Obsidian (Notes & Workspace)
 
 | 키 | 모드 | 설명 |
 |----|------|------|
 | `<leader>od` | n | 데일리 노트 (`60_Periodic/a. Daily`) 생성/열기 |
-| `<leader>on` | n | 새 커스텀 노트 생성 (`00_Inbox/`) |
-| `<leader>os` | n | 전체 볼트 퍼지 검색 (Telescope) |
-| `<leader>os` | v | 선택 코드 스니펫 → 프로젝트 노트 맨 아래에 추가 |
-| `<leader>op` | n | **Obsidian Workspace** (탐색기+뷰어) 토글 |
-| `<leader>oe` | n | 현재 프로젝트의 Obsidian 폴더 열기 (Explorer) |
-| `<leader>of` | n | 현재 프로젝트의 Obsidian 노트들 검색 (Finder) |
-| `<leader>oa` | n | 프로젝트 동기화/아카이브 (`40_Archive`로 이동) |
+| `<leader>oD` | n | 어제의 데일리 노트 열기 |
+| `<leader>on` | n | 새 노트 → Inbox (`00_Inbox/`) |
+| `<leader>oi` | n | 새 Inbox 노트 (빠른 캡처) |
+| `<leader>oN` | n | **새 프로젝트 노트** — 현재 프로젝트 서브폴더에 생성 (예: `10_Projects/26_10_FakeTTL/`) |
+| `<leader>os` | n | 전체 볼트 검색 (Telescope) |
+| `<leader>oS` | n | 볼트 파일 빠른 전환 (Quick Switch) |
 | `<leader>ob` | n | 현재 노트 백링크 목록 |
+| `<leader>ol` | n | 현재 노트 아웃고잉 링크 목록 |
+| `<leader>ot` | n | 태그 목록 |
+| `<leader>oT` | n | 템플릿 삽입 |
+| `<leader>op` | n | **Obsidian Workspace** (탐색기+뷰어) 토글 |
+| `<leader>oe` | n | 현재 프로젝트의 Obsidian 폴더 열기 (Oil) |
+| `<leader>of` | n | 현재 프로젝트의 Obsidian 노트 검색 (Telescope) |
+| `<leader>oa` | n | 프로젝트 동기화/아카이브 (`40_Archive`로 이동) |
+| `<leader>os` | v | 선택 코드 → 프로젝트 노트에 스니펫 추가 |
 | `gf` | n | `[[링크]]` 위에서 해당 노트로 이동 |
-| `<CR>`  | (탐색기) | 선택 파일 → 하단 뷰어로 열기 및 커서 이동 (Edit) |
-| `<Tab>` | (탐색기) | 선택 파일 → 하단 뷰어로 열기 (미리보기/Preview) |
 
-> **Workpace State Machine**
-> 프로젝트 상태(Active/Archive)에 따라 Obsidian 폴더를 자동으로 `10_Projects`와 `40_Archive` 사이에서 동기화하며, 워크스페이스 활성화 시 전용 보라색(Purple) 테두리가 적용됩니다.
+> **Vault**: `~/Documents/SecondBrain` · **PARA**: `00_Inbox`, `10_Projects`, `20_Areas`, `30_Resources`, `40_Archive`, `50_Zettelkasten`, `60_Periodic`, `80_Templates`
 
 ### Jupyter / Molten
 

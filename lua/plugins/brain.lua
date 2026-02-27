@@ -103,10 +103,33 @@ return {
             return
           end
           local act_dir, arc_dir = obs.get_obsidian_dirs()
-          local target_dir = (status == "archive" and arc_dir or act_dir) .. "/" .. project_name
-          -- Strip VAULT prefix for ObsidianNew dir param (it wants relative path from vault root)
-          local rel_dir = target_dir:gsub(VAULT .. "/", "")
-          vim.cmd("ObsidianNew dir=" .. rel_dir)
+          -- Construct absolute path to the specific project subfolder
+          -- e.g. ~/Documents/SecondBrain/Notes/10_Projects/26_10_FakeTTL
+          local abs_target = (status == "archive" and arc_dir or act_dir) .. "/" .. project_name
+          -- Ensure the subfolder exists
+          vim.fn.mkdir(abs_target, "p")
+          -- Ask for the new note title
+          vim.ui.input({ prompt = "📝 노트 제목 (" .. project_name .. "): " }, function(title)
+            if not title or title == "" then return end
+            -- Generate note filename using the same ID scheme as brain.lua opts
+            local id = os.date("%Y%m%d%H%M") .. "-" .. title:gsub(" ", "-"):gsub("[^%w%-]", ""):lower()
+            local note_path = abs_target .. "/" .. id .. ".md"
+            -- Write the new note file
+            local lines = {
+              "---",
+              "title: " .. title,
+              "date: " .. os.date("%Y-%m-%d"),
+              "project: " .. project_name,
+              "---",
+              "",
+              "# " .. title,
+              "",
+            }
+            vim.fn.writefile(lines, note_path)
+            -- Open it in Neovim
+            vim.cmd("edit " .. vim.fn.fnameescape(note_path))
+            vim.notify("📝 노트 생성: " .. project_name .. "/" .. id .. ".md", vim.log.levels.INFO)
+          end)
         end,
         desc = "Obsidian: New Note in Project Folder",
       },

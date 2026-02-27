@@ -1,14 +1,13 @@
 -- lua/plugins/cellular.lua
 -- Mental Health Booster (cellular-automaton.nvim)
---   The ultimate developer easter egg for stressful debugging.
 
 return {
   {
     "eandrju/cellular-automaton.nvim",
-    cmd = "CellularAutomaton",
+    event = "VeryLazy",  -- loads at startup; CellularAutomaton command always available
     keys = {
-      { "<leader>fX", "<cmd>CellularAutomaton make_it_rain<cr>", desc = "Fun: Make it Rain" },
-      { "<leader>fG", "<cmd>CellularAutomaton game_of_life<cr>", desc = "Fun: Game of Life" },
+      { "<leader>fX", function() require("cellular-automaton").start_animation("make_it_rain") end,  desc = "Fun: Make it Rain 🌧️" },
+      { "<leader>fG", function() require("cellular-automaton").start_animation("game_of_life") end,  desc = "Fun: Game of Life 🐛" },
     },
   },
 }

@@ -242,4 +242,3 @@ end, { desc = "Toggle Floating Cheatsheet" })
 
 -- ALL KEYMAPS SEARCH
 vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "Search Keymaps" })
-

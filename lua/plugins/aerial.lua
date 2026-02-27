@@ -5,38 +5,50 @@ return {
   {
     "stevearc/aerial.nvim",
     event = "LazyFile",
+    config = function(_, opts)
+      require("aerial").setup(opts)
+
+      -- Auto-open aerial on code buffers (more reliable than open_automatic)
+      local skip_ft = {
+        "", "aerial", "neo-tree", "oil", "toggleterm", "alpha",
+        "dashboard", "snacks_dashboard", "lazy", "mason", "notify",
+        "TelescopePrompt", "help", "qf", "Trouble", "trouble",
+      }
+      vim.api.nvim_create_autocmd("BufWinEnter", {
+        group = vim.api.nvim_create_augroup("AerialAutoOpen", { clear = true }),
+        callback = function()
+          local ft = vim.bo.filetype
+          for _, f in ipairs(skip_ft) do
+            if ft == f then return end
+          end
+          -- Only open for listed buffers (not scratch/utility)
+          if not vim.bo.buflisted then return end
+          pcall(require("aerial").open, { focus = false })
+        end,
+      })
+    end,
     opts = {
-      -- Outline 설정 (기존 outline.nvim과 동일한 레이아웃 유지)
+      attach_mode = "window",   -- aerial opens right of the current buffer window
+      close_automatic_events = {},
       layout = {
         max_width = { 35, 0.2 },
         min_width = 35,
         default_direction = "right",
       },
-      -- 보여줄 심볼들 (Architect 관점에서 핵심적인 것들)
       filter_kind = {
-        "Class",
-        "Constructor",
-        "Enum",
-        "Function",
-        "Interface",
-        "Module",
-        "Method",
-        "Struct",
+        "Class", "Constructor", "Enum", "Function",
+        "Interface", "Module", "Method", "Struct",
       },
-      -- 현재 위치 자동 추적 및 하이라이트
       highlight_on_hover = true,
       autojump = true,
-      
-      -- 상태줄 아이콘 (선택 사항)
       show_guides = true,
       guides = {
-        mid_item = "├─",
-        last_item = "└─",
+        mid_item   = "├─",
+        last_item  = "└─",
         nested_top = "│ ",
         whitespace = "  ",
       },
     },
-    -- <leader>O (기존 Outline 단축키 계승)
     keys = {
       { "<leader>O", "<cmd>AerialToggle!<cr>", desc = "Aerial (Code Map) Toggle" },
     },
