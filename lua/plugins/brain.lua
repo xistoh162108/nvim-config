@@ -22,6 +22,9 @@ return {
         },
       },
 
+      -- Modern Commands (obsidian.nvim >= 3.x)
+      legacy_commands = false,
+
       -- PARA Structure Standard
       notes_subdir = "Notes/00_Inbox",
       new_notes_location = "notes_subdir",
@@ -42,7 +45,7 @@ return {
 
       -- Attachments
       attachments = {
-        img_folder = "Notes/99_Attachments",
+        folder = "Notes/99_Attachments",
       },
 
       -- Completion (Blink.cmp compatibility)
@@ -52,7 +55,9 @@ return {
       },
 
       -- Metadata Management
-      disable_frontmatter = false,
+      frontmatter = {
+        enabled = true,
+      },
       note_id_func = function(title)
         local suffix = ""
         if title ~= nil then
@@ -90,8 +95,8 @@ return {
     -- =========================================================================
     keys = {
       -- Note Operations
-      { "<leader>on", "<cmd>ObsidianNew<CR>",       desc = "Obsidian: New Note (Inbox)" },
-      { "<leader>oi", "<cmd>ObsidianNew<CR>",       desc = "Obsidian: New Inbox Note" },
+      { "<leader>on", "<cmd>Obsidian new<CR>",       desc = "Obsidian: New Note (Inbox)" },
+      { "<leader>oi", "<cmd>Obsidian new<CR>",       desc = "Obsidian: New Inbox Note" },
       {
         "<leader>oN",
         function()
@@ -133,16 +138,16 @@ return {
         end,
         desc = "Obsidian: New Note in Project Folder",
       },
-      { "<leader>os", "<cmd>ObsidianSearch<CR>",    desc = "Obsidian: Search Vault" },
-      { "<leader>oS", "<cmd>ObsidianQuickSwitch<CR>", desc = "Obsidian: Quick Switch" },
-      { "<leader>ob", "<cmd>ObsidianBacklinks<CR>", desc = "Obsidian: Backlinks" },
-      { "<leader>ol", "<cmd>ObsidianLinks<CR>",     desc = "Obsidian: Outgoing Links" },
-      { "<leader>ot", "<cmd>ObsidianTags<CR>",      desc = "Obsidian: Tags" },
-      { "<leader>oT", "<cmd>ObsidianTemplate<CR>",  desc = "Obsidian: Templates" },
+      { "<leader>os", "<cmd>Obsidian search<CR>",    desc = "Obsidian: Search Vault" },
+      { "<leader>oS", "<cmd>Obsidian quick_switch<CR>", desc = "Obsidian: Quick Switch" },
+      { "<leader>ob", "<cmd>Obsidian backlinks<CR>", desc = "Obsidian: Backlinks" },
+      { "<leader>ol", "<cmd>Obsidian links<CR>",     desc = "Obsidian: Outgoing Links" },
+      { "<leader>ot", "<cmd>Obsidian tags<CR>",      desc = "Obsidian: Tags" },
+      { "<leader>oT", "<cmd>Obsidian template<CR>",  desc = "Obsidian: Templates" },
 
       -- Periodic Notes
-      { "<leader>od", "<cmd>ObsidianToday<CR>",     desc = "Obsidian: Daily (Today)" },
-      { "<leader>oD", "<cmd>ObsidianYesterday<CR>", desc = "Obsidian: Daily (Yesterday)" },
+      { "<leader>od", "<cmd>Obsidian today<CR>",     desc = "Obsidian: Daily (Today)" },
+      { "<leader>oD", "<cmd>Obsidian yesterday<CR>", desc = "Obsidian: Daily (Yesterday)" },
 
       -- Project Management (Role-based Integration via core.obsidian_project)
       {
@@ -229,7 +234,7 @@ return {
         "gf",
         function()
           if require("obsidian").util.cursor_on_markdown_link() then
-            return "<cmd>ObsidianFollowLink<CR>"
+            return "<cmd>Obsidian follow_link<CR>"
           else
             return "gf"
           end

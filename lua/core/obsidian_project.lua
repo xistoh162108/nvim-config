@@ -197,8 +197,8 @@ function M.open_project_note()
   
   ensure_note(note_path, project_name, code_root)
   
-  -- 우측 40컬럼 패널 생성 (Explorer)
-  vim.cmd("botright 40vsplit")
+  -- 우측 80컬럼 패널 생성 (Explorer) (사용자 요청으로 40 -> 80으로 2배 확장)
+  vim.cmd("botright 80vsplit")
   local parent_win = vim.api.nvim_get_current_win()
   
   -- 디렉토리 핸들러 강제 하이재킹 방지 (Snacks.explorer 등이 floating 창으로 가로채는 현상 방어)

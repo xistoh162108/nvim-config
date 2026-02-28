@@ -60,6 +60,14 @@ return {
         end,
         desc = "DAP Run last",
       },
+      {
+        "<leader>de",
+        function()
+          require("dapui").eval()
+        end,
+        mode = { "n", "v" },
+        desc = "DAP Evaluate (Hover)",
+      },
     },
     config = function()
       local dap = require("dap")
@@ -256,7 +264,6 @@ return {
   -- 3) Virtual text
   { "theHamsta/nvim-dap-virtual-text", dependencies = { "mfussenegger/nvim-dap" }, opts = {} },
 
-  -- 4) mason-nvim-dap: 디버거 자동 설치/세팅
   {
     "jay-babu/mason-nvim-dap.nvim",
     dependencies = { "mason-org/mason.nvim", "mfussenegger/nvim-dap" },
@@ -265,7 +272,19 @@ return {
       ensure_installed = {
         "js-debug-adapter", -- pwa-node/pwa-chrome
         "codelldb", -- C/C++/Rust
+        "python", -- debugpy
       },
     },
+  },
+
+  -- 5) nvim-dap-python: Python venv 자동 감지 및 단일 파일/테스트 디버깅 특화
+  {
+    "mfussenegger/nvim-dap-python",
+    dependencies = { "mfussenegger/nvim-dap", "rcarriga/nvim-dap-ui" },
+    config = function()
+      -- debugpy가 mason을 통해 설치되는 기본 경로
+      local path = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(path)
+    end,
   },
 }

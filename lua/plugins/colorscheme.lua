@@ -27,6 +27,7 @@ return {
         -- 기타 플러그인 구분선들
         hl.TelescopeBorder = { fg = active_border, bold = true }
         hl.NeoTreeWinSeparator = { fg = inactive_border, bold = true }
+        hl.AvanteWinSeparator = { fg = inactive_border, bold = true }
         hl.SnacksPickerBorder = { fg = active_border, bold = true }
         
         -- colorful-winsep 플러그인이 쓰는 활성 창 색상
@@ -55,7 +56,7 @@ return {
     event = { "WinLeave" },
     opts = {
       interval = 30,
-      no_exec_files = { "packer", "TelescopePrompt", "mason", "CompetiTest", "NvimTree", "neo-tree", "oil", "snacks_dashboard", "alpha" },
+      no_exec_files = { "packer", "TelescopePrompt", "mason", "CompetiTest", "NvimTree", "neo-tree", "oil", "snacks_dashboard", "alpha", "avante", "Avante", "AvanteInput", "AvanteSelectedFiles" },
       symbols = { "━", "┃", "┏", "┓", "┗", "┛" },
     },
   }

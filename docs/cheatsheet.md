@@ -1,469 +1,76 @@
-# Neovim Cheatsheet
-> LazyVim · Cyberdream · Leader = `Space`
+# ⌨️ Terminal IDE & Neovim 핵심 치트시트 (Cheatsheet)
+
+본 문서는 Zsh, Tmux, 그리고 Neovim에 설치된 60여 개의 플러그인을 빠르게 활용하기 위한 핵심 단축키 모음입니다.
+
+*(범례: `Spc` = 스페이스바 (`<leader>`), `^` = `Ctrl` 키, `⇧` = `Shift` 키)*
 
 ---
 
-## Modes
+## 🚀 1. 터미널 및 공용(Zsh & Tmux)
 
-| 키 | 모드 | 설명 |
-|----|------|------|
-| `ESC` / `<C-[>` | → Normal | 노멀 모드로 복귀 |
-| `i` | → Insert | 커서 앞에서 삽입 |
-| `a` | → Insert | 커서 뒤에서 삽입 |
-| `I` | → Insert | 줄 맨 앞에서 삽입 |
-| `A` | → Insert | 줄 맨 끝에서 삽입 |
-| `o` | → Insert | 아래 새 줄 + 삽입 |
-| `O` | → Insert | 위 새 줄 + 삽입 |
-| `v` | → Visual | 문자 비주얼 |
-| `V` | → V-Line | 줄 비주얼 |
-| `<C-v>` | → V-Block | 블록 비주얼 |
-| `:` | → Command | 명령 모드 |
-| `R` | → Replace | 교체 모드 |
+| 기능 분류 | 단축키 / 명령어 | 설명 | 관련 플러그인 |
+| :--- | :--- | :--- | :--- |
+| **Zsh 제안 수락** | `→` 또는 `^f` | 히스토리 기반 회색 명령어 추천 수락 | `zsh-autosuggestions` |
+| **Zsh 히스토리 검색** | `↑` / `↓` | 타이핑된 문자열 기반 과거 명령어 탐색 | `zsh-history-substring-search` |
+| **Zsh 스마트 cd** | `z <문자열>` | 히스토리 기반 디렉토리 퍼지 점프 | `zoxide` (zsh) |
+| **Tmux Prefix** | `Ctrl + a` | 모든 Tmux 조작의 시작점 (이하 `prefix`) | `tmux` |
+| **Tmux 분할 (가로/세로)**| `prefix` + `-` / `\|` | 현재 디렉토리 기준 창 가로/세로 분할 | `tmux` |
+| **Tmux 창/패널 이동** | `prefix` + `h/j/k/l` | 좌/하/상/우 창으로 이동 (Vim 방향키 통합) | `vim-tmux-navigator` |
+| **Tmux 세션 점프** | `prefix` + `o` | 퍼지 기반 세션 매니저로 프로젝트 즉시 이동 | `tmux-sessionx` |
+| **Tmux 플로팅 터미널** | `prefix` + `p` | 배경 레이아웃을 유지하는 팝업 터미널 토글 | `tmux-floax` |
 
 ---
 
-## Navigation (Normal Mode)
+## 📝 2. Neovim 텍스트 편집 및 다중 커서
 
-| 키 | 설명 |
-|----|------|
-| `h` `j` `k` `l` | 좌 / 하 / 상 / 우 |
-| `w` `b` `e` | 단어 앞 / 뒤 / 끝 |
-| `W` `B` `E` | WORD 앞 / 뒤 / 끝 |
-| `gg` / `G` | 파일 처음 / 끝 |
-| `{n}G` | n번 줄로 이동 |
-| `0` / `^` / `$` | 줄 시작(col0) / 첫 비공백 / 줄 끝 |
-| `%` | 매칭 괄호로 점프 |
-| `*` / `#` | 커서 단어 검색 (앞/뒤) |
-| `f{c}` / `F{c}` | 문자 c로 점프 (앞/뒤) |
-| `t{c}` / `T{c}` | 문자 c 직전으로 점프 (앞/뒤) |
-| `;` / `,` | f/F/t/T 반복 |
-| `<C-d>` / `<C-u>` | 반 페이지 下 / 上 |
-| `<C-f>` / `<C-b>` | 한 페이지 下 / 上 |
-| `zz` / `zt` / `zb` | 커서를 화면 중앙/상단/하단 |
-| `H` / `M` / `L` | 화면 상단/중앙/하단으로 이동 |
-| `<C-o>` / `<C-i>` | 점프 리스트 뒤로 / 앞으로 |
-| `'` / `` ` `` | 마크로 이동 (줄 / 정확한 위치) |
+| 기능 분류 | 단축키 / 명령어 | 설명 | 관련 플러그인 |
+| :--- | :--- | :--- | :--- |
+| **의미론적 증감** | 쌍 따옴표 내 `^a`/`^x`| 숫자, 날짜(2026-01-31), `true`/`false` 등 지능형 증감 | `dial.nvim` |
+| **단어 괄호/따옴표 감싸기**| `ysiw"` / `ds"` | 단어를 `""`로 감싸거나 제거 | `nvim-surround` |
+| **다중 커서 토글** | `^n` / `^p` / `^x` / `^q` | 단어 단위 다중 커서 (VSCode의 Ctrl+D 방식) | `multicursor.nvim` |
+| **클립보드 히스토리** | `Spc f y` | 복사/삭제(Yank/Delete) 내역 퍼지 검색 후 붙여넣기 | `nvim-neoclip` |
+| **안전한 붙여넣기 (Visual)**| `p` | 선택된 텍스트를 클립보드 원본 훼손 없이 덮어씌움 | 커스텀 (`keymaps.lua`) |
+| **에디터 자동 저장/종료**| `:w` / `:q` | Neovim 기본 저장 / 종료 | 기본 기능 |
 
 ---
 
-## Editing (Normal Mode)
+## 🔍 3. 파일 탐색기, 검색 및 점프
 
-| 키 | 설명 |
-|----|------|
-| `x` | 커서 문자 삭제 |
-| `dd` | 줄 삭제 |
-| `cc` | 줄 변경 (삭제 + 삽입) |
-| `yy` | 줄 복사 |
-| `p` / `P` | 커서 뒤/앞에 붙여넣기 |
-| `u` / `<C-r>` | 실행 취소 / 재실행 |
-| `r{c}` | 문자를 c로 교체 |
-| `.` | 마지막 변경 반복 |
-| `~` | 대소문자 토글 |
-| `>>` / `<<` | 들여쓰기 / 내어쓰기 |
-| `J` | 줄 합치기 |
-| `d{motion}` | 모션으로 삭제 |
-| `c{motion}` | 모션으로 변경 |
-| `y{motion}` | 모션으로 복사 |
-| `ciw` / `diw` / `yiw` | 단어 변경/삭제/복사 |
-| `ci"` / `di"` / `yi"` | 따옴표 안 변경/삭제/복사 |
-| `ca"` / `da"` / `ya"` | 따옴표 포함 변경/삭제/복사 |
-| `cit` / `dit` | 태그 안 변경/삭제 |
-| `ci(` / `ci[` / `ci{` | 괄호 안 변경 |
+| 기능 분류 | 단축키 / 명령어 | 설명 | 관련 플러그인 |
+| :--- | :--- | :--- | :--- |
+| **화면 내 퍼지 점프** | `s` / `S` | 두 글자 타이핑 후 화면의 아무 위치로나 즉시 점프 | `flash.nvim` |
+| **프로젝트 파일 탐색자**| `Spc e` / `Spc E` | 프로젝트 루트(`e`) 또는 현재 파일 경로(`E`) 트리 토글 | `neo-tree` / `oil.nvim` |
+| **파일 이름 퍼지 찾기** | `Spc f f` | 전체 프로젝트 내의 파일 퍼지 검색 | `telescope.nvim` |
+| **텍스트 내용 검색** | `Spc f g` | 프로젝트 내 특정 텍스트 퍼지 검색 (Live Grep) | `telescope.nvim` |
+| **Harpoon 마크 추가/점프**| `Spc h a` / `Spc h 1~4`| 자주 방문하는 파일을 버퍼 인덱스(1~4)에 추가/점프 | `harpoon` |
+| **단축어/Keymap 찾기** | `Spc s k` | 도무지 단축키가 기억나지 않을 때 모든 매핑 퍼지 검색 | `telescope.nvim` |
 
 ---
 
-## Search & Replace
+## 💻 4. 언어 지원(LSP), 리팩토링 및 디버깅
 
-| 키 | 설명 |
-|----|------|
-| `/pattern` | 앞으로 검색 |
-| `?pattern` | 뒤로 검색 |
-| `n` / `N` | 다음 / 이전 결과 |
-| `:%s/old/new/g` | 전체 치환 |
-| `:%s/old/new/gc` | 전체 치환 (확인) |
-| `:s/old/new/g` | 현재 줄 치환 |
-
----
-
-## Windows & Splits
-
-| 키 | 설명 |
-|----|------|
-| `<C-w>s` | 수평 분할 |
-| `<C-w>v` | 수직 분할 |
-| `<C-w>h/j/k/l` | 창 이동 |
-| `<C-w>H/J/K/L` | 창 위치 이동 |
-| `<C-w>q` | 창 닫기 |
-| `<C-w>=` | 창 크기 균등 |
-| `<C-w>+/-` | 높이 조절 |
-| `<C-w></>` | 너비 조절 |
+| 기능 분류 | 단축키 / 명령어 | 설명 | 관련 플러그인 |
+| :--- | :--- | :--- | :--- |
+| **정의/참조 이동** | `g d` / `g r` | 변수 구현부로 이동 하거나 파일 내 모든 사용 위치 찾기 | 내장 LSP |
+| **실시간 이름 변경** | `Spc c r` | 커서가 위치한 심볼(변수 등) 일괄 변경 및 실시간 미리보기 | `inc-rename.nvim` |
+| **오류 자동 수정 제안** | `Spc c a` | 에러에 대한 빠른 픽스 및 Code Action | 내장 LSP |
+| **코드 포맷팅** | `Spc c f` | 파일 혹은 선택된 영역 자동 정렬 | `conform.nvim` |
+| **전역 에러 목록 확인** | `Spc x x` | 열려 있는 파일/프로젝트의 에러, 경고 창 토글 | `trouble.nvim` |
+| **디버깅 중단점/시작** | `Spc d b` / `Spc d c` | 디버그 브레이크포인트 생성 및 디버거 계속 진행 토글 | `nvim-dap` |
 
 ---
 
-## File Commands
-
-| 키 | 설명 |
-|----|------|
-| `:w` | 저장 |
-| `:q` | 종료 |
-| `:wq` / `ZZ` | 저장 후 종료 |
-| `:q!` / `ZQ` | 저장 없이 종료 |
-| `:e {파일}` | 파일 열기 |
-
----
-
-## Plugin Keybindings
-
-### Flash (빠른 이동)
-
-| 키 | 모드 | 설명 |
-|----|------|------|
-| `s` | n/x/o | Flash 점프 |
-| `S` | n/x/o | Flash Treesitter |
-| `r` | o | Remote Flash |
-| `R` | o/x | Treesitter 검색 |
-| `<C-s>` | cmd | Flash 검색 토글 |
-
-| `<Esc>` | 멀티커서 종료 |
-
-### Overseer (태스크 매니저)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>tr` | 태스크 실행 (OverseerRun) |
-| `<leader>tt` | 태스크 목록 토글 |
-| `<leader>tc` | 태스크 빌드 (OverseerBuild) |
-| `<leader>ti` | 태스크 정보 |
-
-### Navigation (Cross-tool)
-
-| 키 | 설명 |
-|----|------|
-| `<C-h/j/k/l>` | Neovim 스플릿 ↔ Tmux 패널 이동 |
-
-### Bufferline (버퍼)
-
-| 키 | 설명 |
-|----|------|
-| `<S-h>` / `[b` | 이전 버퍼 |
-| `<S-l>` / `]b` | 다음 버퍼 |
-
-### File Explorer
-
-| 키 | 설명 |
-|----|------|
-| `<leader>e` | 탐색기 (프로젝트 루트) |
-| `<leader>E` | 탐색기 (현재 파일 위치) |
-| `<leader>-` | Oil (상위 디렉토리) |
-
-### Telescope (퍼지 파인더)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>ff` | 파일 찾기 |
-| `<leader>fg` | Live Grep |
-| `<leader>fb` | 버퍼 찾기 |
-| `<leader>fh` | 도움말 태그 |
-| `<leader>fp` | 프로젝트 목록 |
-| `<leader>st` | TODO 검색 |
-
-### Harpoon (빠른 파일 이동)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>ha` | 현재 파일 추가 |
-| `<leader>hh` | Harpoon 메뉴 |
-| `<leader>h1` | 북마크 1로 이동 |
-| `<leader>h2` | 북마크 2로 이동 |
-| `<leader>h3` | 북마크 3로 이동 |
-| `<leader>h4` | 북마크 4로 이동 |
-| `[h` / `]h` | 이전 / 다음 북마크 |
-
-### Git
-
-| 키 | 설명 |
-|----|------|
-| `<leader>gg` | LazyGit 열기 |
-| `]c` / `[c` | 다음 / 이전 Git Hunk |
-| `<leader>hs` | Hunk 스테이지 |
-| `<leader>hr` | Hunk 리셋 |
-| `<leader>hu` | Hunk 스테이지 취소 |
-| `<leader>hp` | Hunk 미리보기 |
-| `<leader>hb` | 줄 Blame |
-| `<leader>go` | Diffview 열기 |
-| `<leader>gc` | Diffview 닫기 |
-| `<leader>gh` | Diffview 파일 히스토리 |
-| `<leader>gS` | Fugit2 상태 |
-| `<leader>gG` | Fugit2 그래프 |
-
-### LSP (Language Server Protocol)
-
-| 키 | 설명 |
-|----|------|
-| `gd` | 정의로 이동 |
-| `gD` | 선언으로 이동 |
-| `gI` | 구현으로 이동 |
-| `gy` | 타입 정의로 이동 |
-| `gr` | 참조 찾기 (Telescope) |
-| `K` | 호버 문서 |
-| `<leader>ca` | 코드 액션 |
-| `<leader>cr` | 심볼 이름 변경 |
-| `<leader>cf` | 포맷 |
-
-### Glance (미리보기 창)
-
-| 키 | 설명 |
-|----|------|
-| `gpd` | 정의 미리보기 (현재 파일 유지) |
-| `gpr` | 참조 미리보기 |
-| `gpt` | 타입 정의 미리보기 |
-| `gpi` | 구현 미리보기 |
-
-### Trouble (진단)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>xx` | 전체 진단 토글 |
-| `<leader>xX` | 버퍼 진단 토글 |
-| `<leader>cs` | 심볼 (Trouble) — Normal mode |
-| `<leader>xL` | Location List |
-| `<leader>xQ` | Quickfix List |
-| `<leader>xr` | LSP 참조/정의 (Trouble) |
-
-| `<leader>O` | Aerial 코드 심볼 맵 토글 (파일 열면 자동 열림) |
-
-### Undotree (히스토리 시각화)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>ut` | 무한 Undo 트리 토글 |
-
-### Treesitter Context
-
-| 키 | 설명 |
-|----|------|
-| `<leader>tc` | 상단 고정 컨텍스트 토글 (현재 함수/클래스 표시) |
-
-### Dropbar (Breadcrumbs)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>.` | Breadcrumb 픽 모드 (키보드로 경로 이동) |
-
-### DAP (디버깅)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>db` | 브레이크포인트 토글 |
-| `<leader>dc` | 디버그 시작/계속 |
-| `<leader>di` | Step Into |
-| `<leader>do` | Step Over |
-| `<leader>dO` | Step Out |
-| `<leader>dr` | DAP REPL |
-| `<leader>dl` | 마지막 실행 반복 |
-| `<leader>du` | DAP UI 토글 |
-| `<leader>dt` | 인라인 진단 토글 |
-
-### Neotest (테스트 러너)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>Tr` | 가장 가까운 테스트 실행 |
-| `<leader>Tf` | 현재 파일 전체 테스트 |
-| `<leader>Ts` | 테스트 요약 패널 |
-| `<leader>To` | 테스트 출력 패널 |
-| `<leader>Tx` | 테스트 중지 |
-| `]T` | 다음 실패 테스트로 이동 |
-| `[T` | 이전 실패 테스트로 이동 |
-
-### Avante (AI · Claude)
-
-| 키 | 모드 | 설명 |
-|----|------|------|
-| `<leader>aa` | n | Avante에 질문 |
-| `<leader>at` | n | Avante 토글 |
-| `<leader>af` | n | Avante 포커스 |
-| `<leader>ar` | n | Avante 새로고침 |
-| `<leader>ae` | v | 선택 영역 편집 |
-| `<leader>aR` | n | RepoMap 표시 |
-| `<leader>am` | n | 모델 전환 |
-| `<leader>ap` | n | 프로바이더 전환 |
-| `<leader>as` | n | Avante 중지 |
-| `<leader>an` | n | 새 채팅 |
-| `<leader>ah` | n | 대화 히스토리 |
-| `y` / `n` | n | 충돌 수락 / 거절 |
-| `]x` / `[x` | n | 다음 / 이전 충돌 |
-
-### Copilot (Insert Mode)
-
-| 키 | 설명 |
-|----|------|
-| `<C-l>` | 제안 수락 |
-| `<C-j>` | 단어 수락 |
-| `<C-;>` | 다음 제안 |
-| `<C-,>` | 이전 제안 |
-| `<C-]>` | 제안 취소 |
-
-### UFO Folding
-
-| 키 | 설명 |
-|----|------|
-| `zR` | 모든 폴드 열기 |
-| `zM` | 모든 폴드 닫기 |
-| `zr` | 폴드 레벨 줄이기 |
-| `zm` | 폴드 레벨 늘리기 |
-| `zp` | 폴드 미리보기 |
-| `zK` | 폴드 미리보기 or 호버 |
-
-### Terminal (Snacks)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>tf` | 플로팅 터미널 (Snacks) |
-| `<leader>tv` | 수직 터미널 (Snacks) |
-| `<leader>th` | 수평 터미널 (Snacks) |
-
-> ToggleTerm은 iron.nvim REPL 백엔드 전용으로 내부에서만 사용됩니다.
-
-### Markdown Preview (Disabled by default)
-
-_Use `render-markdown.nvim` which handles in-editor rendering automatically._
-
-
-### Minimap (neominimap.nvim)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>nm` | 전역 미니맵 토글 (Toggle) |
-| `<leader>no` | 전역 미니맵 활성화 (Enable) |
-| `<leader>nc` | 전역 미니맵 비활성화 (Disable) |
-| `<leader>nwt` | 현재 창 미니맵 토글 |
-| `<leader>nf` | 미니맵으로 포커스 이동 |
-
----
-
-### Database (vim-dadbod-ui)
-
-| 키 | 설명 |
-|----|------|
-| `<leader>D` | DBUI 사이드패널 토글 |
-| `o` (DBUI창) | 연결/테이블 열기 |
-| `R` (DBUI창) | 새로고침 |
-| `\S` (SQL버퍼) | 쿼리 실행 (결과 하단 창) |
-| `\S` (Visual) | 선택 영역만 실행 |
-
-> DB 연결: `:DBUIAddConnection` 또는 환경변수 `DB_URL`
-
-### Market Watcher (증시/시세 위젯)
-
-| 키 | 모드 | 설명 |
-|----|------|------|
-| `<leader>M` | n | Market Watcher (BTC/KOSPI 등) 토글 |
-| `r` | (위젯) | 수동 새로고침 (Refresh) |
-| `<CR>` | (위젯) | 커서 종목 차트 웹 브라우저로 열기 |
-| `q` / `<ESC>` | (위젯) | 위젯 닫기 |
-
-### Explorer & Navigation
-
-| 키 | 설명 |
-|----|------|
-| `<leader>e` | **Oil 탐색기 열기** (Primary) |
-| `<leader>-` | Oil: 부모 디렉토리 빠른 열기 |
-| `<leader>fe` | Neo-tree 사이드바 (Secondary) |
-| `gf` | `[[링크]]` 위에서 해당 노트로 이동 |
-
-### Obsidian (Notes & Workspace)
-
-| 키 | 모드 | 설명 |
-|----|------|------|
-| `<leader>od` | n | 데일리 노트 (`60_Periodic/a. Daily`) 생성/열기 |
-| `<leader>oD` | n | 어제의 데일리 노트 열기 |
-| `<leader>on` | n | 새 노트 → Inbox (`00_Inbox/`) |
-| `<leader>oi` | n | 새 Inbox 노트 (빠른 캡처) |
-| `<leader>oN` | n | **새 프로젝트 노트** — 현재 프로젝트 서브폴더에 생성 (예: `10_Projects/26_10_FakeTTL/`) |
-| `<leader>os` | n | 전체 볼트 검색 (Telescope) |
-| `<leader>oS` | n | 볼트 파일 빠른 전환 (Quick Switch) |
-| `<leader>ob` | n | 현재 노트 백링크 목록 |
-| `<leader>ol` | n | 현재 노트 아웃고잉 링크 목록 |
-| `<leader>ot` | n | 태그 목록 |
-| `<leader>oT` | n | 템플릿 삽입 |
-| `<leader>op` | n | **Obsidian Workspace** (탐색기+뷰어) 토글 |
-| `<leader>oe` | n | 현재 프로젝트의 Obsidian 폴더 열기 (Oil) |
-| `<leader>of` | n | 현재 프로젝트의 Obsidian 노트 검색 (Telescope) |
-| `<leader>oa` | n | 프로젝트 동기화/아카이브 (`40_Archive`로 이동) |
-| `<leader>os` | v | 선택 코드 → 프로젝트 노트에 스니펫 추가 |
-| `gf` | n | `[[링크]]` 위에서 해당 노트로 이동 |
-
-> **Vault**: `~/Documents/SecondBrain` · **PARA**: `00_Inbox`, `10_Projects`, `20_Areas`, `30_Resources`, `40_Archive`, `50_Zettelkasten`, `60_Periodic`, `80_Templates`
-
-### Jupyter / Molten
-
-| 키 | 모드 | 설명 |
-|----|------|------|
-| `<leader>mi` | n | Python3 커널 초기화 |
-| `<leader>ml` | n | 현재 줄 실행 |
-| `<leader>mc` | n | 현재 셀 재실행 |
-| `<leader>mo` | n | 출력 창으로 포커스 이동 |
-| `<leader>mh` | n | 출력 창 숨기기 |
-
-> 이미지 렌더링: image.nvim (backend: iTerm2 3.5+ 및 Kitty 지원)
-
-### LaTeX (vimtex)
-
-> `\` = localleader. `.tex` 파일에서 활성
-
-| 키 | 설명 |
-|----|------|
-| `\ll` | 컴파일 시작 / 토글 (Auto-Compile) |
-| `\lv` | PDF 포워드 검색 (nvim → Skim) |
-| `\le` | 컴파일 에러 목록 열기 |
-
-| `<leader>Fd` | 연결된 디바이스 목록 |
-| `<leader>Fr` | Flutter Run |
-| `<leader>FH` | Hot Reload |
-| `<leader>FR` | Hot Restart |
-
-### Low-Level & Academic
-
-| 키 | 설명 |
-|----|------|
-| `<leader>ce` | Compiler Explorer (C → ASM 실시간 변환) |
-| `<leader>hx` | HexView 토글 (바이너리 분석) |
-| `K` (asm파일) | 어셈블리 명령어(Opcode) 도움말 호버 |
-| `!header` | (Insert) 과제용 헤더 템플릿 생성 |
-| `!socket` | (Insert) C 네트워크 소켓 프로그래밍 템플릿 |
-| `!asm_temp` | (Insert) x86_64 어셈블리 기본 템플릿 |
-| `<leader>fX` | (Fun) Cellular Automaton: Make it Rain! |
-| `<leader>fG` | (Fun) Cellular Automaton: Game of Life |
-
----
-
-### Misc
-
-| 키 | 설명 |
-|----|------|
-| `<leader>tt` | 다크/라이트 테마 토글 |
-| `,v` | 가상환경 선택 |
-| `<leader>.` | Dropbar breadcrumb 픽 |
-| `<leader>bd` | 버퍼 닫기 & 레이아웃 보호 (대시보드 복구) |
-| `:TelemetryReport` | 사용 통계 보고서 생성 |
-
----
-
-## 포맷터 (Conform)
-
-| 언어 | 포맷터 |
-|------|--------|
-| C / C++ / Rust | clang-format / rustfmt |
-| Java | google-java-format |
-| Python | ruff |
-| JS/TS/JSON/MD | prettierd |
-
----
-
-## 레이아웃 명령
-
-| 명령 | 설명 |
-|------|------|
-| `:LayoutDefault` | 기본 3단 정렬 레이아웃 적용 |
-| `:LayoutBottomPanels` | 하단 패널(터미널 등) 높이 균등 정리 |
+## 🤖 5. AI 도구 및 터미널 팝업 지원
+
+| 기능 분류 | 단축키 / 명령어 | 설명 | 관련 플러그인 |
+| :--- | :--- | :--- | :--- |
+| **AI 소스코드 추천 수락** | 삽입 모드에서 `^l` | 흐린 회색 텍스트로 뜨는 Github Copilot 제안 수락 | `copilot.lua` |
+| **AI 채팅/에이전트 사이드바**| `Spc a a` | 선택된 코드 구문에 대해 자연어로 질문 및 코드 수정 요청 | `avante.nvim` |
+| **현재 파일 에러 즉시 해결** | `Spc a d` | 버퍼 내의 에러/경고들을 긁어모아 AI에게 분석 및 해결 **즉시 요청** | `avante.nvim` |
+| **현재 파일 에러 채팅 전송** | `Spc a D` | 버퍼 내의 에러/경고들을 AI 채팅창에 **복사만 해둠** (추가 질문 가능) | `avante.nvim` |
+| **LazyGit (Git UI)** | `Spc g g` | 터미널 밖으로 나가지 않고도 GUI와 같은 Git 인터페이스 사용 | `snacks.nvim` |
+| **플로팅 터미널 UI** | `Spc t f` | 배경 레이아웃을 망가뜨리지 않고 터미널 명령을 수행 | `snacks.nvim` |
+| **터미널 모드 탈출** | `Esc Esc` | 열려 있는 터미널에서 빠져나와 Neovim Normal 모드로 복귀 | 커스텀 (`keymaps.lua`) |
+| **터미널에서 창 이동** | 터미널에서 `^h/j/k/l` | 터미널 입력 상태에서 방향키 방향의 Neovim 코드 창으로 즉시 포커스 이동 | 커스텀 (`keymaps.lua`) |
+| **마켓 감시자 토글** | `Spc M` | 코딩 중 간단히 확인할 수 있는 시장/상태 커스텀 뷰 | `core.market` |
+| **간편 치트시트 열기** | `Spc ?` | 가장 자주 쓰이는 단축키만을 요약한 팝업창을 화면 정중앙 렌더 | 커스텀 (`keymaps.lua`) |

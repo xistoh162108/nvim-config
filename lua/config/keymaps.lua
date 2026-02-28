@@ -1,4 +1,10 @@
 -- TERMINAL (snacks.nvim)
+vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Terminal left" })
+vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Terminal down" })
+vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Terminal up" })
+vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Terminal right" })
+
 vim.keymap.set({ "n", "t" }, "<leader>tf", function()
   -- Toggle a floating terminal (using current shell)
   local shell = vim.o.shell or vim.fn.getenv("SHELL")
@@ -201,8 +207,9 @@ vim.keymap.set("n", "<leader>?", function()
     "|--------------------------|------------------------------|",
     "| `Spc g g` LazyGit 열기     | `Spc D` DBUI 토글              |",
     "| `Spc a a` AI 채팅(Avante)  | `Spc h a` Harpoon 추가         |",
-    "| `^l` (삽입) AI 제안 수락   | `Spc h h` Harpoon 메뉴         |",
-    "| `Spc t f` 터미널 열기      | `Spc h 1~4` 1~4번 마크 점프    |",
+    "| `Spc a d`/`D` 에러 즉시/채팅 전송| `Spc h h` Harpoon 메뉴         |",
+    "| `^l` (삽입) AI 제안 수락   | `Spc h 1~4` 1~4번 마크 점프    |",
+    "| `Spc t f` 터미널 열기      | `Spc t t` 다크/라이트 테마     |",
     "| `Spc r c` 원격(SSH) 접속   | `Spc t t` 다크/라이트 테마     |",
     "",
     "---",
@@ -242,3 +249,17 @@ end, { desc = "Toggle Floating Cheatsheet" })
 
 -- ALL KEYMAPS SEARCH
 vim.keymap.set("n", "<leader>sk", require("telescope.builtin").keymaps, { desc = "Search Keymaps" })
+
+-- ===========================
+-- QoL: Visual Paste (preserve clipboard)
+-- Paste in visual mode without overwriting the clipboard register
+-- ===========================
+vim.keymap.set("x", "p",  '"_dP', { desc = "Visual paste (preserve clipboard)" })
+vim.keymap.set("x", "P",  '"_dP', { desc = "Visual paste (preserve clipboard)" })
+
+-- ===========================
+-- SPARTAN TRAINING MODE (Phase 17.5)
+-- Arrow keys are completely disabled globally across ALL windows
+-- (including sidebars, explorers, terminals, and command line)
+-- => Moved to hardtime.nvim for hint generation globally
+-- ===========================

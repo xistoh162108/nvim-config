@@ -165,28 +165,59 @@ return {
       { "<leader>am", "<cmd>AvanteModels<cr>", desc = "Avante Models" },
       { "<leader>ap", "<cmd>AvanteSwitchProvider<cr>", desc = "Avante Switch Provider" },
       { "<leader>ad", function()
-        -- Agentic Debug: 현재 버퍼의 Diagnostics(에러)를 수집하여 Avante에게 전달
+        -- Agentic Debug: 현재 버퍼의 Diagnostics(에러)를 수집하여 Avante에게 '즉시' 전달
         local diagnostics = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
         if #diagnostics == 0 then
           diagnostics = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
         end
-        
         if #diagnostics == 0 then
           vim.notify("No diagnostics found to debug!", vim.log.levels.INFO)
           return
         end
-
         local error_messages = {}
         for _, diag in ipairs(diagnostics) do
           table.insert(error_messages, string.format("Line %d: %s", diag.lnum + 1, diag.message))
         end
-
-        local prompt = "I have the following diagnostics in this file:\n\n" .. 
-                       table.concat(error_messages, "\n") .. 
-                       "\n\nPlease analyze these errors and suggest a fix."
+        local prompt = "I have the following diagnostics in this file:\n\n" .. table.concat(error_messages, "\n") .. "\n\nPlease analyze these errors and suggest a fix."
         
         require("avante.api").ask({ question = prompt })
-      end, desc = "Avante Debug (Diagnostics Fix)" },
+      end, desc = "Avante Debug (Send Immediately)" },
+
+      { "<leader>aD", function()
+        -- Agentic Debug: Diagnostics를 통째로 복사해서 Avante 채팅창(Input)에 '붙여넣기만' 함
+        local diagnostics = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+        if #diagnostics == 0 then
+          diagnostics = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+        end
+        if #diagnostics == 0 then
+          vim.notify("No diagnostics found to debug!", vim.log.levels.INFO)
+          return
+        end
+        local error_messages = {}
+        for _, diag in ipairs(diagnostics) do
+          table.insert(error_messages, string.format("Line %d: %s", diag.lnum + 1, diag.message))
+        end
+        local prompt = "I have the following diagnostics in this file:\n\n" .. table.concat(error_messages, "\n") .. "\n\n"
+        
+        -- 1. Avante 창을 엽니다. (ask에 빈 질문을 주면 제출하지 않고 창만 엶)
+        require("avante.api").ask()
+        
+        -- 2. 약간의 딜레이 후 프롬프트 창버퍼에 텍스트를 밀어 넣고 커서를 맨 아래로 보냄
+        vim.defer_fn(function()
+          local sidebar = require("avante").get()
+          if sidebar and sidebar.containers and sidebar.containers.input then
+            local bufnr = sidebar.containers.input.bufnr
+            local winid = sidebar.containers.input.winid
+            if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_win_is_valid(winid) then
+              local lines = vim.split(prompt, "\n")
+              vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+              vim.api.nvim_set_current_win(winid)
+              vim.cmd("normal! G")
+              vim.cmd("startinsert!")
+            end
+          end
+        end, 200)
+      end, desc = "Avante Debug (Insert to Chat)" },
       { "<leader>as", "<cmd>AvanteStop<cr>", desc = "Avante Stop" },
       { "<leader>an", "<cmd>AvanteChatNew<cr>", desc = "Avante New Chat" },
       { "<leader>ah", "<cmd>AvanteHistory<cr>", desc = "Avante History" },

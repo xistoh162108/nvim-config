@@ -14,18 +14,19 @@ return {
         "dashboard", "snacks_dashboard", "lazy", "mason", "notify",
         "TelescopePrompt", "help", "qf", "Trouble", "trouble",
       }
-      vim.api.nvim_create_autocmd("BufWinEnter", {
-        group = vim.api.nvim_create_augroup("AerialAutoOpen", { clear = true }),
-        callback = function()
-          local ft = vim.bo.filetype
-          for _, f in ipairs(skip_ft) do
-            if ft == f then return end
-          end
-          -- Only open for listed buffers (not scratch/utility)
-          if not vim.bo.buflisted then return end
-          pcall(require("aerial").open, { focus = false })
-        end,
-      })
+      -- [Disabled] 사용자의 요청으로 시작 시 우측 Outline 자동 띄우기 비활성화
+      -- vim.api.nvim_create_autocmd("BufWinEnter", {
+      --   group = vim.api.nvim_create_augroup("AerialAutoOpen", { clear = true }),
+      --   callback = function()
+      --     local ft = vim.bo.filetype
+      --     for _, f in ipairs(skip_ft) do
+      --       if ft == f then return end
+      --     end
+      --     -- Only open for listed buffers (not scratch/utility)
+      --     if not vim.bo.buflisted then return end
+      --     pcall(require("aerial").open, { focus = false })
+      --   end,
+      -- })
     end,
     opts = {
       attach_mode = "window",   -- aerial opens right of the current buffer window

@@ -16,10 +16,15 @@ vim.opt.shiftwidth = 2
 vim.opt.smarttab = true
 vim.opt.softtabstop = 2
 vim.opt.termguicolors = true
-vim.opt.mouse = "a" -- 모든 모드에서 마우스 활성화
+vim.opt.mouse = "" -- [Spartan] 마우스 사용 전면 금지 (모든 모드)
 vim.opt.mousescroll = "ver:2,hor:6" -- 터미널 스크롤 부드럽게 (세로 2줄, 가로 6칸)
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+
+-- 한글 상태에서도 노말 모드 단축키(Leader 등)가 작동하도록 영문 매핑
+vim.opt.langmap = "ㅁa,ㅠb,ㅊc,ㅇd,ㄷe,ㄹf,ㅎg,ㅗh,ㅑi,ㅓj,ㅏk,ㅣl,ㅡm,ㅜn,ㅐo,ㅔp,ㅂq,ㄱr,ㄴs,ㅅt,ㅕu,ㅍv,ㅈw,ㅌx,ㅛy,ㅋz," ..
+    "ㅃQ,ㅉW,ㄸE,ㄲR,ㅆT,ㅒO,ㅖP," ..
+    "ㅁA,ㅠB,ㅊC,ㅇD,ㄷE,ㄹF,ㅎG,ㅗH,ㅑI,ㅓJ,ㅏK,ㅣL,ㅡM,ㅜN,ㅐO,ㅔP,ㅂQ,ㄱR,ㄴS,ㅅT,ㅕU,ㅍV,ㅈW,ㅌX,ㅛY,ㅋZ"
 
 -- UX
 vim.opt.clipboard = "unnamedplus"

@@ -340,12 +340,9 @@ local function apply_default_layout_once()
   end
 
   open_explorer_safely()
-  open_outline_safely()
+  -- open_outline_safely() -- [Disabled] 사용자의 요청으로 시작 시 우측 Outline 자동 띄우기 비활성화
 
   local explorer_win = find_explorer_win()
-  local outline_win = find_win_by_ft({ "Outline", "outline" })
-
-  -- 1) Explorer 왼쪽 위 고정 (폭 40)
   if explorer_win and win_valid(explorer_win) then
     safe_set_current_win(explorer_win)
     pcall(vim.cmd, "wincmd H")
@@ -518,6 +515,33 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "FocusGained" }, {
   end,
 })
 
+-- =========================================================
+-- Fix missing borders for windows excluded by colorful-winsep
+-- =========================================================
+vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "FocusGained" }, {
+  group = vim.api.nvim_create_augroup("ColorfulWinsepFallback", { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      local ok_w, win = pcall(vim.api.nvim_get_current_win)
+      if not ok_w or not win_valid(win) then return end
+      local ok_b, bufnr = pcall(vim.api.nvim_win_get_buf, win)
+      if not ok_b or not buf_valid(bufnr) then return end
+      
+      local ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
+      -- colorful-winsep가 무시하는 대표적인 창들
+      if ft == "avante" or ft == "Avante" or ft == "AvanteInput" or ft == "toggleterm" or ft == "neo-tree" then
+        local r_ok, curr_winhl = pcall(vim.api.nvim_get_option_value, "winhl", { win = win })
+        curr_winhl = (r_ok and curr_winhl) and curr_winhl or ""
+        -- 빈 문자열이 아니면서 WinSeparator가 없으면 덧붙임
+        if not curr_winhl:find("WinSeparator") then
+          local comma = (#curr_winhl > 0) and "," or ""
+          pcall(vim.api.nvim_set_option_value, "winhl", curr_winhl .. comma .. "WinSeparator:ColorfulWinsep", { win = win })
+        end
+      end
+    end)
+  end,
+})
+
 -- ===========================
 -- Obsidian Project Auto-Sync
 -- ===========================
@@ -557,5 +581,58 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
   callback = function()
     -- VimEnter 시점의 지연을 막기 위해 schedule 사용
     vim.schedule(sync_obsidian_status)
+  end,
+})
+
+-- ===========================
+-- Smart Relative Number Toggle
+--   Normal / FocusIn  → relative (easier motion targeting)
+--   Insert / FocusOut → absolute (easier line reference while typing)
+-- ===========================
+local numtoggle = vim.api.nvim_create_augroup("NumberToggle", { clear = true })
+vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
+  group = numtoggle,
+  callback = function()
+    if vim.wo.number then vim.wo.relativenumber = true end
+  end,
+})
+vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "WinLeave" }, {
+  group = numtoggle,
+  callback = function()
+    if vim.wo.number then vim.wo.relativenumber = false end
+  end,
+})
+
+-- ===========================
+-- Cmdline Auto-Switching (KOR/ENG IME Integration)
+-- ===========================
+-- 이전 입력기 상태를 기억할 변수 (기본값: Mac 영문)
+local prev_ime = "com.apple.keylayout.ABC"
+
+-- 비동기로 입력기를 전환하는 함수 (타이핑 렉 방지)
+local function set_ime(ime)
+  vim.fn.jobstart({"macism", ime})
+end
+
+local ime_group = vim.api.nvim_create_augroup("ImeAutoSwitch", { clear = true })
+
+-- 1. Cmdline (:, /) 진입 시: 현재 입력기 저장 후 무조건 영문으로 강제 전환
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+  group = ime_group,
+  callback = function()
+    local handle = io.popen("macism")
+    if handle then
+      prev_ime = handle:read("*a"):gsub("%s+", "")
+      handle:close()
+    end
+    set_ime("com.apple.keylayout.ABC")
+  end,
+})
+
+-- 2. Cmdline (:, /) 종료 시: 진입 전 사용하던 입력기(예: 한글)로 복구
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+  group = ime_group,
+  callback = function()
+    set_ime(prev_ime)
   end,
 })

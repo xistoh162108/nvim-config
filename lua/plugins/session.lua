@@ -35,14 +35,18 @@ return {
 
         -- 🌟 핵심 보완: 저장 전 사이드바 자동 닫기 (Clean Snapshot)
         pre_save_cmds = {
-          "Neotree close",
-          "AerialClose",
-          "Trouble close",
+          function()
+            pcall(vim.cmd, "Neotree close")
+            pcall(vim.cmd, "AerialClose")
+            pcall(vim.cmd, "Trouble close")
+          end,
         },
         
         -- 복원 후 정리 (필요 시)
         post_restore_cmds = {
-          "Neotree close", -- 복원 시점에 떠있을 수 있는 유령 트리 제거
+          function()
+            pcall(vim.cmd, "Neotree close") -- 복원 시점에 떠있을 수 있는 유령 트리 제거
+          end,
         },
 
         -- 세션 렌더링 설정

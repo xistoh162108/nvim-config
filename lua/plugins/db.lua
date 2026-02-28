@@ -41,4 +41,25 @@ return {
       vim.g.db_ui_save_location = vim.fn.stdpath("data") .. "/db_ui"
     end,
   },
+
+  -- 3) blink.cmp 와 vim-dadbod-completion 브릿지 (SQL 자동완성)
+  {
+    "saghen/blink.cmp",
+    optional = true,
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      opts.sources.default = opts.sources.default or { "lsp", "path", "snippets", "buffer" }
+      -- dadbod 소스를 default 리스트에 추가
+      if not vim.tbl_contains(opts.sources.default, "dadbod") then
+        table.insert(opts.sources.default, "dadbod")
+      end
+      -- provider 객체에 dadbod 모듈 등록
+      opts.sources.providers = opts.sources.providers or {}
+      opts.sources.providers.dadbod = { 
+        name = "Dadbod", 
+        module = "vim_dadbod_completion.blink",
+        score_offset = 80, -- 자동완성 우선순위 높임
+      }
+    end,
+  },
 }
