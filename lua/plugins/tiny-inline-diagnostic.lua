@@ -7,9 +7,9 @@ return {
       preset = "modern",
     },
     keys = {
-      { "<leader>dt", "<cmd>TinyInlineDiag toggle<cr>", desc = "Toggle inline diagnostics" },
-      { "<leader>de", "<cmd>TinyInlineDiag enable<cr>", desc = "Enable inline diagnostics" },
-      { "<leader>dd", "<cmd>TinyInlineDiag disable<cr>", desc = "Disable inline diagnostics" },
+      { "<leader>ux", "<cmd>TinyInlineDiag toggle<cr>", desc = "Toggle inline diagnostics" },
+      { "<leader>uE", "<cmd>TinyInlineDiag enable<cr>", desc = "Enable inline diagnostics" },
+      { "<leader>uD", "<cmd>TinyInlineDiag disable<cr>", desc = "Disable inline diagnostics" },
     },
   },
   {
